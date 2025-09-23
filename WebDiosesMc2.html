@@ -1,0 +1,1351 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moderación Dioses MC</title>
+    <meta name="description" content="🔱 Web de moderación para el staff de Dioses MC">
+    <meta property="og:title" content="Moderación Dioses MC">
+    <meta property="og:description"
+        content="Web de moderación para el staff de Dioses MC, con normas Discord y Minecraft, formularios de sanciones y controles internos.">
+    <meta property="og:image"
+        content="https://raw.githubusercontent.com/Fedes10/Web-Dioses-MC/refs/heads/main/Im%C3%A1genes/redondeadoLogoStaff.png">
+    <meta property="og:type" content="website">
+    <link rel="icon" type="image/png"
+    href="https://images.emojiterra.com/google/noto-emoji/unicode-15/color/512px/1f531.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", sans-serif
+        }
+
+        body {
+            background: #2C2F33;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            animation: fadeInBody .6s ease-in
+        }
+
+        @keyframes fadeInBody {
+            from {
+                opacity: 0
+            }
+
+            to {
+                opacity: 1
+            }
+        }
+
+        /* ======================= CABECERA ======================= */
+        header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: linear-gradient(90deg, #1d2d69, #a4a438);
+            box-shadow: 0 4px 10px rgba(72, 71, 71, .4)
+        }
+
+        header .logo-placeholder {
+            width: 6em;
+            height: 6em;
+            background: url('https://raw.githubusercontent.com/Fedes10/Web-Dioses-MC/refs/heads/main/Im%C3%A1genes/redondeadoLogoStaff.png') center/contain no-repeat #b69871;
+            border-radius: 50%;
+            margin-bottom: 10px;
+            border: 3px solid #9e924d;
+            box-shadow: 0 0 15px rgba(255, 215, 0, .5);
+
+            will-change: transform;
+            backface-visibility: hidden;
+            transform-style: preserve-3d;
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+
+            animation: pulse 3s ease-in-out infinite
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1)
+            }
+
+            50% {
+                transform: scale(1.05)
+            }
+        }
+
+        header h1 {
+            font-size: 2.3rem;
+            color: #FFD700;
+            text-shadow: 0 0 10px #FFA500
+        }
+
+        /* ======================= MENÚ SUPERIOR ======================= */
+        #top-menu {
+            display: flex;
+            justify-content: center;
+            background: #23272A;
+            padding: 12px;
+            gap: 15px;
+            flex-wrap: wrap;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, .3)
+        }
+
+        .top-menu-btn {
+            padding: 10px 18px;
+            background: #3b4a8c;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: .3s;
+            color: #fff;
+            border: 2px solid transparent
+        }
+
+        .top-menu-btn:hover {
+            background: #5468d1
+        }
+
+        .top-menu-btn.active {
+            background: #7289DA;
+            border-color: #FFD700;
+            box-shadow: 0 0 10px #FFD700;
+            transform: scale(1.05)
+        }
+
+        /* ======================= MAIN Y SECCIONES ======================= */
+        main {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            max-width: 1900px;
+            margin: 0 auto;
+            width: 100%;
+            gap: 20px;
+            padding: 20px;
+            flex: 1;
+            animation: fadeInMain .7s ease-in
+        }
+
+        @keyframes fadeInMain {
+            from {
+                opacity: 0;
+                transform: translateY(10px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        /* ======================= MENÚ LATERAL Y NORMAS ======================= */
+        #menu,
+        #normas-panel {
+            background: #2C2F33;
+            padding: 15px;
+            border-radius: 10px;
+            height: fit-content;
+            box-shadow: 0 0 10px rgba(0, 0, 0, .5);
+        }
+
+        #menu h2,
+        #normas-panel h2 {
+            color: #7289DA;
+            margin-bottom: 10px;
+            text-align: center;
+            border-bottom: 1px solid #7289DA;
+            padding-bottom: 5px;
+        }
+
+        /* ==================== MENÚ IZQUIERDA ==================== */
+        .canal {
+            padding: 10px;
+            margin: 8px 0;
+            background: #23272A;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: .3s;
+            color: #777777;
+        }
+
+        .canal:hover,
+        .canal.active {
+            background: #505e92;
+            color: #d8d6d6;
+            transform: translateX(5px)
+        }
+
+        /* ==================== MENÚ DERECHA ==================== */
+        .norma-section {
+            display: none;
+            margin-top: 10px;
+        }
+
+        .norma-section.active {
+            display: block
+        }
+
+        .norma-section h4 {
+            color: #62817d;
+            margin-top: 15px;
+            /* Más espacio entre títulos */
+            margin-bottom: 5px
+        }
+
+        .norma-section ul {
+            list-style: none;
+            padding-left: 0;
+            /* Quita el padding de la lista */
+            color: #88815a;
+        }
+
+        /* Estilo para cada item de sanción */
+        .norma-section li {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+            background: #1e1f22;
+            padding: 8px;
+            border-radius: 5px;
+        }
+
+        .sanction-text {
+            flex-grow: 1;
+            /* Permite que el texto ocupe el espacio restante */
+            margin-right: 10px;
+        }
+
+        /* Estilo para el botón de sanción */
+        .add-norma-btn {
+            background-color: #f7d51d;
+            border: none;
+            color: #2C2F33;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s ease-in-out;
+            width: 25px;
+            /* Aumentado para mejor click */
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2em;
+            /* Hace el "+" más grande */
+            padding: 0;
+            line-height: 1;
+            /* Centra mejor el texto */
+        }
+
+        .add-norma-btn:hover {
+            transform: scale(1.1);
+        }
+
+        /* ======================= CONTENIDO ======================= */
+        #contenido {
+            background: #23272A;
+            border-radius: 10px;
+            padding: 20px;
+            min-width: 250px;
+            max-width: 100%;
+            box-shadow: 0 0 10px rgba(114, 137, 218, .5);
+            animation: fadeInContent .7s ease-in
+        }
+
+        #contenido h3 {
+            color: #478dbb;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        label {
+            display: block;
+            color: rgb(190, 190, 190);
+            margin: 10px 0 5px;
+            font-weight: bold;
+        }
+
+        /* ======================= FORMULARIO ======================= */
+        .formulario {
+            display: none;
+            margin-bottom: 20px;
+        }
+
+        .formulario.active {
+            display: block;
+        }
+
+        /* Estilo para el botón de limpiar */
+        .clear-form-btn {
+            background-color: #c0392b;
+            color: #fff;
+            margin-top: 15px;
+            padding: 4px 8px;
+            /* Modificado: más pequeño */
+            border-radius: 8px;
+            cursor: pointer;
+            transition: .3s;
+            float: right;
+            border: none;
+            /* Asegurado que no tiene borde */
+        }
+
+        .clear-form-btn:hover {
+            background-color: #e74c3c;
+            transform: scale(1.05);
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border-radius: 6px;
+            border: none;
+            outline: none;
+            background: #2C2F33;
+            font-weight: bold;
+            font-size: 1.09em;
+            color: #d6d44d
+        }
+
+        button[type="submit"] {
+            margin-top: 15px;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: #7289DA;
+            font-weight: bold;
+            cursor: pointer;
+            transition: .3s;
+            display: block;
+            margin-left: auto;
+            margin-right: auto
+        }
+
+        button[type="submit"]:hover {
+            background: #99AAB5;
+            transform: scale(1.05)
+        }
+
+        pre {
+            background: #2C2F33;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            overflow-x: auto
+        }
+
+        #contenido label {
+            font-size: 1em;
+            color: #626f77;
+            font-weight: normal;
+        }
+
+        #contenido input,
+        #contenido select,
+        #contenido textarea {
+            font-size: 1.2rem;
+        }
+
+        #contenido button {
+            font-size: 1.1rem;
+        }
+
+        /* ======================= BUSCADOR ======================= */
+        .search-container {
+            position: relative
+        }
+
+        #search-normas {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border-radius: 6px;
+            border: none;
+            outline: none;
+            background: #1e2124;
+            color: #fff
+        }
+
+        .clear-btn {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #c0392b;
+            border: none;
+            color: #fff;
+            padding: 2px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: .9em
+        }
+
+        /* ======================= SANCIONES ======================= */
+        .sanction {
+            font-family: monospace;
+            color: #d6d44d;
+            margin-right: 5px;
+            font-weight: bold;
+        }
+
+        /* ======================= BOTONES RESPONSIVE ======================= */
+        .toggle-btn {
+            position: fixed;
+            top: 10px;
+            background: #7289DA;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            z-index: 1100;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, .3);
+            display: none
+        }
+
+        #toggle-left {
+            left: 5px
+        }
+
+        #toggle-right {
+            right: 5px
+        }
+
+        @media(max-width:900px) {
+            main {
+                grid-template-columns: 1fr
+            }
+
+            #menu,
+            #normas-panel {
+                position: fixed;
+                top: 0;
+                bottom: 0;
+                width: 220px;
+                background: #2C2F33;
+                opacity: 0;
+                transform: translateX(-100%);
+                z-index: 1000;
+                height: 100%
+            }
+
+            #menu.open {
+                transform: translateX(0);
+                opacity: 1
+            }
+
+            #normas-panel {
+                right: 0;
+                left: auto;
+                transform: translateX(100%)
+            }
+
+            #normas-panel.open {
+                transform: translateX(0);
+                opacity: 1
+            }
+
+            .toggle-btn {
+                display: block
+            }
+
+            .formulario.active {
+                display: block !important;
+            }
+        }
+
+        @keyframes fadeInContent {
+            from {
+                opacity: 0;
+                transform: translateY(10px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="logo-placeholder"></div>
+        <h1>Moderación Dioses MC</h1>
+    </header>
+
+    <div id="top-menu">
+        <div class="top-menu-btn" data-menu="future-improvement">⚙️ Registro</div>
+        <div class="top-menu-btn active" data-menu="forms">📝 Formularios</div>
+        <div class="top-menu-btn" data-menu="help-tickets">🆘 Ayuda tickets</div>
+    </div>
+
+    <div id="toggle-left" class="toggle-btn">☰ Canales</div>
+    <div id="toggle-right" class="toggle-btn">📜 Normas</div>
+    <main>
+
+        <div id="menu">
+            <h2>Canales</h2>
+            <div class="canal active" data-form="form-sancion" data-norma-set="minecraft">📝│pedir-sancion</div>
+            <div class="canal" data-form="form-bans" data-norma-set="minecraft">⛔│bans-kicks</div>
+            <div class="canal" data-form="form-warns" data-norma-set="minecraft">⚠️│warns-mutes</div>
+            <div class="canal" data-form="form-tp" data-norma-set="minecraft">🌐│tp-bug</div>
+            <div class="canal" data-form="form-discord" data-norma-set="discord">🔷│sanciones-dc</div>
+        </div>
+
+        <div id="contenido">
+            <button class="clear-form-btn">Limpiar</button>
+            <h3 id="tituloFormulario">Formulario 📝│pedir-sancion</h3>
+
+            <div id="form-container">
+                <form id="form-sancion" class="formulario active">
+                    <label>Nick:</label><input type="text" id="nick-sancion" required>
+                    <label>Modalidad:</label><select id="modalidad-sancion">
+                        <option value="Survival">Survival</option>
+                        <option value="Escapa de la Bestia">Escapa de la Bestia</option>
+                    </select>
+                    <label>Razón:</label><input type="text" id="razon-sancion" readonly>
+                    <label>Tiempo:</label><input type="text" id="tiempo-sancion" readonly>
+                    <label>Tipo:</label><input type="text" id="tipo-sancion" readonly>
+                    <label>Pruebas:</label><textarea id="pruebas-sancion"></textarea>
+                    <button type="submit">Generar mensaje</button>
+                    <pre id="resultado-sancion"></pre>
+                </form>
+
+                <form id="form-bans" class="formulario">
+                    <label>Nick:</label><input type="text" id="nick-bans" required>
+                    <label>Modalidad:</label><select id="modalidad-bans">
+                        <option value="Survival">Survival</option>
+                        <option value="Escapa de la Bestia">Escapa de la Bestia</option>
+                    </select>
+                    <label>Razón:</label><input type="text" id="razon-bans" readonly>
+                    <label>Tiempo:</label><input type="text" id="tiempo-bans" readonly>
+                    <label>Tipo:</label><input type="text" id="tipo-bans" readonly>
+                    <label>Pruebas:</label><textarea id="pruebas-bans"></textarea>
+                    <button type="submit">Generar mensaje</button>
+                    <pre id="resultado-bans"></pre>
+                </form>
+
+                <form id="form-warns" class="formulario">
+                    <label>Nick:</label><input type="text" id="nick-warns" required>
+                    <label>Modalidad:</label><select id="modalidad-warns">
+                        <option value="Survival">Survival</option>
+                        <option value="Escapa de la Bestia">Escapa de la Bestia</option>
+                    </select>
+                    <label>Razón:</label><input type="text" id="razon-warns" readonly>
+                    <label>Tiempo:</label><input type="text" id="tiempo-warns" readonly>
+                    <label>Tipo:</label><input type="text" id="tipo-warns" readonly>
+                    <label>Pruebas:</label><textarea id="pruebas-warns"></textarea>
+                    <button type="submit">Generar mensaje</button>
+                    <pre id="resultado-warns"></pre>
+                </form>
+
+                <form id="form-tp" class="formulario">
+                    <label>Nick:</label><input type="text" id="nick-tp" required>
+                    <label>Modalidad:</label><select id="modalidad-tp">
+                        <option value="Survival">Survival</option>
+                        <option value="Escapa de la Bestia">Escapa de la Bestia</option>
+                    </select>
+                    <label>Pruebas:</label><textarea id="pruebas-tp"></textarea>
+                    <button type="submit">Generar mensaje</button>
+                    <pre id="resultado-tp"></pre>
+                </form>
+
+                <form id="form-discord" class="formulario">
+                    <label>ID Discord:</label><input type="text" id="id-discord" required>
+                    <label>Razón:</label><input type="text" id="razon-discord" readonly>
+                    <label>Tiempo:</label><input type="text" id="tiempo-discord" readonly>
+                    <label>Tipo:</label><input type="text" id="tipo-discord" readonly>
+                    <label>Pruebas:</label><textarea id="pruebas-discord"></textarea>
+                    <button type="submit">Generar mensaje</button>
+                    <pre id="resultado-discord"></pre>
+                </form>
+            </div>
+
+            <div id="help-tickets-content" class="formulario">
+                <div style="text-align: center; padding: 20px;">
+                    <p style="font-size: 1.2em; color: #7289DA; margin-bottom: 20px;">
+                        🚧 ¡Estamos trabajando en esta sección! 🚧
+                    </p>
+                    <p style="font-size: 1em; color: #99AAB5;">
+                        Pronto podrás encontrar aquí una pequeña IA de ayuda para la resolución de tickets.
+                    </p>
+                    <div style="margin-top: 30px;">
+                        <img src="https://static.wixstatic.com/media/f567b1_48c1b8bcf6d94043a35f79fb42b772b3~mv2.gif"
+                            alt="Trabajando en ello" style="max-width: 60%; height: auto; border-radius: 8px;">
+                    </div>
+                </div>
+            </div>
+
+            <div id="future-improvement-content" class="formulario">
+                <div style="text-align: center; padding: 20px;">
+                    <p style="font-size: 1.2em; color: #7289DA; margin-bottom: 20px;">
+                        💡 ¡Una futura mejora está en camino! 💡
+                    </p>
+                    <p style="font-size: 1em; color: #99AAB5;">
+                        Este espacio está reservado para almacenar un registro de sanciones de los jugadores tanto en
+                        Discord como en el Servidor de Minecraft 👁️
+                    </p>
+                    <div style="margin-top: 30px;">
+                        <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNmQ1NGU3MzI1Z3l2eWJrbm1lYzFzMmE1dGdwOHl3dDNyN2tyamRjbSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/l0Iyl7y3D9P7vD1U8/giphy.gif"
+                            alt="Trabajando en ello" style="max-width: 80%; height: auto; border-radius: 8px;">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div id="normas-panel">
+            <h2 id="normas-title">Normas Minecraft</h2>
+            <div class="search-container">
+                <input type="text" id="search-normas" placeholder="Buscar...">
+            </div>
+
+            <div id="minecraft-rules" class="norma-section active">
+                <h4>Uso de hacks (Cliente Hack, X-Ray, Fly, etc)</h4>
+                <ul>
+                    <li><span class="sanction-text">#1 IpBan 60d</span> <button class="add-norma-btn"
+                            data-razon="Uso de hacks (Cliente Hack, X-Ray, Fly, etc)" data-tiempo="60d"
+                            data-tipo="IpBan" data-veces-infringidas="1">+</button></li>
+                    <li><span class="sanction-text">#2 IpBan 130d</span> <button class="add-norma-btn"
+                            data-razon="Uso de hacks (Cliente Hack, X-Ray, Fly, etc)" data-tiempo="130d"
+                            data-tipo="IpBan" data-veces-infringidas="2">+</button></li>
+                    <li><span class="sanction-text">#3 IpBan Permanente</span> <button class="add-norma-btn"
+                            data-razon="Uso de hacks (Cliente Hack, X-Ray, Fly, etc)" data-tiempo="Permanente"
+                            data-tipo="IpBan" data-veces-infringidas="3">+</button></li>
+                </ul>
+
+                <h4>Hacer team con hackers</h4>
+                <ul>
+                    <li><span class="sanction-text">#1 Ban 10d</span> <button class="add-norma-btn"
+                            data-razon="Hacer team con hackers" data-tiempo="10d" data-tipo="Ban"
+                            data-veces-infringidas="1">+</button></li>
+                    <li><span class="sanction-text">#2 Ban 20d</span> <button class="add-norma-btn"
+                            data-razon="Hacer team con hackers" data-tiempo="20d" data-tipo="Ban"
+                            data-veces-infringidas="2">+</button></li>
+                    <li><span class="sanction-text">#3 Ban 30d</span> <button class="add-norma-btn"
+                            data-razon="Hacer team con hackers" data-tiempo="30d" data-tipo="Ban"
+                            data-veces-infringidas="3">+</button></li>
+                    <li><span class="sanction-text">#4 Ban 40d</span> <button class="add-norma-btn"
+                            data-razon="Hacer team con hackers" data-tiempo="40d" data-tipo="Ban"
+                            data-veces-infringidas="4">+</button></li>
+                    <li><span class="sanction-text">#5 Ban Permanente</span> <button class="add-norma-btn"
+                            data-razon="Hacer team con hackers" data-tiempo="Permanente" data-tipo="Ban"
+                            data-veces-infringidas="5">+</button></li>
+                </ul>
+
+                <h4>Kill Boosting (Farmeo de kills)</h4>
+                <ul>
+                    <li><span class="sanction-text">#1 Ban 1d</span> <button class="add-norma-btn"
+                            data-razon="Kill Boosting (Farmeo de kills)" data-tiempo="1d" data-tipo="Ban"
+                            data-veces-infringidas="1">+</button></li>
+                    <li><span class="sanction-text">#2 Ban 3d</span> <button class="add-norma-btn"
+                            data-razon="Kill Boosting (Farmeo de kills)" data-tiempo="3d" data-tipo="Ban"
+                            data-veces-infringidas="2">+</button></li>
+                    <li><span class="sanction-text">#3 Ban 5d</span> <button class="add-norma-btn"
+                            data-razon="Kill Boosting (Farmeo de kills)" data-tiempo="5d" data-tipo="Ban"
+                            data-veces-infringidas="3">+</button></li>
+                    <li><span class="sanction-text">#4 Ban 7d</span> <button class="add-norma-btn"
+                            data-razon="Kill Boosting (Farmeo de kills)" data-tiempo="7d" data-tipo="Ban"
+                            data-veces-infringidas="4">+</button></li>
+                    <li><span class="sanction-text">#5 Ban 90d</span> <button class="add-norma-btn"
+                            data-razon="Kill Boosting (Farmeo de kills)" data-tiempo="90d" data-tipo="Ban"
+                            data-veces-infringidas="5">+</button></li>
+                </ul>
+
+                <h4>Abuso de bugs</h4>
+                <ul>
+                    <li><span class="sanction-text">#1 Kickeo</span> <button class="add-norma-btn"
+                            data-razon="Abuso de bugs" data-tiempo="" data-tipo="Kickeo"
+                            data-veces-infringidas="1">+</button></li>
+                    <li><span class="sanction-text">#2 Ban 5d</span> <button class="add-norma-btn"
+                            data-razon="Abuso de bugs" data-tiempo="5d" data-tipo="Ban"
+                            data-veces-infringidas="2">+</button></li>
+                    <li><span class="sanction-text">#3 Ban 10d</span> <button class="add-norma-btn"
+                            data-razon="Abuso de bugs" data-tiempo="10d" data-tipo="Ban"
+                            data-veces-infringidas="3">+</button></li>
+                    <li><span class="sanction-text">#4 Ban 20d</span> <button class="add-norma-btn"
+                            data-razon="Abuso de bugs" data-tiempo="20d" data-tipo="Ban"
+                            data-veces-infringidas="4">+</button></li>
+                    <li><span class="sanction-text">#5 Ban 40d</span> <button class="add-norma-btn"
+                            data-razon="Abuso de bugs" data-tiempo="40d" data-tipo="Ban"
+                            data-veces-infringidas="5">+</button></li>
+                    <li><span class="sanction-text">#6 Ban Permanente</span> <button class="add-norma-btn"
+                            data-razon="Abuso de bugs" data-tiempo="Permanente" data-tipo="Ban"
+                            data-veces-infringidas="6">+</button></li>
+                </ul>
+
+                <h4>Mal uso de comandos (/report, /helpop, /afk)</h4>
+                <ul>
+                    <li><span class="sanction-text">#1 Warn 1</span> <button class="add-norma-btn"
+                            data-razon="Mal uso de comandos (/report, /helpop, /afk)" data-tiempo="" data-tipo="Warn"
+                            data-veces-infringidas="1">+</button></li>
+                    <li><span class="sanction-text">#2 Warn 2</span> <button class="add-norma-btn"
+                            data-razon="Mal uso de comandos (/report, /helpop, /afk)" data-tiempo="" data-tipo="Warn"
+                            data-veces-infringidas="2">+</button></li>
+                    <li><span class="sanction-text">#3 Warn 3</span> <button class="add-norma-btn"
+                            data-razon="Mal uso de comandos (/report, /helpop, /afk)" data-tiempo="" data-tipo="Warn"
+                            data-veces-infringidas="3">+</button></li>
+                    <li><span class="sanction-text">#4 Mute 7d</span> <button class="add-norma-btn"
+                            data-razon="Mal uso de comandos (/report, /helpop, /afk)" data-tiempo="7d" data-tipo="Mute"
+                            data-veces-infringidas="4">+</button></li>
+                    <li><span class="sanction-text">#5 Ban 7d</span> <button class="add-norma-btn"
+                            data-razon="Mal uso de comandos (/report, /helpop, /afk)" data-tiempo="7d" data-tipo="Ban"
+                            data-veces-infringidas="5">+</button></li>
+                    <li><span class="sanction-text">#6 Ban permanente</span> <button class="add-norma-btn"
+                            data-razon="Mal uso de comandos (/report, /helpop, /afk)" data-tiempo="permanente"
+                            data-tipo="Ban" data-veces-infringidas="6">+</button></li>
+                </ul>
+
+                <h4>Mal uso del chat (Spam/Flood)</h4>
+                <ul>
+                    <li><span class="sanction-text">#1 Advertencia</span> <button class="add-norma-btn"
+                            data-razon="Mal uso del chat (Spam/Flood)" data-tiempo="" data-tipo="Advertencia"
+                            data-veces-infringidas="1">+</button></li>
+                    <li><span class="sanction-text">#2 Muteo 2d</span> <button class="add-norma-btn"
+                            data-razon="Mal uso del chat (Spam/Flood)" data-tiempo="2d" data-tipo="Muteo"
+                            data-veces-infringidas="2">+</button></li>
+                    <li><span class="sanction-text">#3 Muteo 5d</span> <button class="add-norma-btn"
+                            data-razon="Mal uso del chat (Spam/Flood)" data-tiempo="5d" data-tipo="Muteo"
+                            data-veces-infringidas="3">+</button></li>
+                    <li><span class="sanction-text">#4 Muteo 10d</span> <button class="add-norma-btn"
+                            data-razon="Mal uso del chat (Spam/Flood)" data-tiempo="10d" data-tipo="Muteo"
+                            data-veces-infringidas="4">+</button></li>
+                    <li><span class="sanction-text">#5 Muteo Permanente</span> <button class="add-norma-btn"
+                            data-razon="Mal uso del chat (Spam/Flood)" data-tiempo="Permanente" data-tipo="Muteo"
+                            data-veces-infringidas="5">+</button></li>
+                </ul>
+
+                <h4>Mal uso del chat (Toxicidad, Insultos, Amenazas)</h4>
+                <ul>
+                    <li><span class="sanction-text">#1 Muteo 1d</span> <button class="add-norma-btn"
+                            data-razon="Mal uso del chat (Toxicidad, Insultos, Amenazas)" data-tiempo="1d"
+                            data-tipo="Muteo" data-veces-infringidas="1">+</button></li>
+                    <li><span class="sanction-text">#2 Muteo 3d</span> <button class="add-norma-btn"
+                            data-razon="Mal uso del chat (Toxicidad, Insultos, Amenazas)" data-tiempo="3d"
+                            data-tipo="Muteo" data-veces-infringidas="2">+</button></li>
+                    <li><span class="sanction-text">#3 Muteo 7d</span> <button class="add-norma-btn"
+                            data-razon="Mal uso del chat (Toxicidad, Insultos, Amenazas)" data-tiempo="7d"
+                            data-tipo="Muteo" data-veces-infringidas="3">+</button></li>
+                    <li><span class="sanction-text">#4 Muteo 10d</span> <button class="add-norma-btn"
+                            data-razon="Mal uso del chat (Toxicidad, Insultos, Amenazas)" data-tiempo="10d"
+                            data-tipo="Muteo" data-veces-infringidas="4">+</button></li>
+                    <li><span class="sanction-text">#5 Muteo Permanente</span> <button class="add-norma-btn"
+                            data-razon="Mal uso del chat (Toxicidad, Insultos, Amenazas)" data-tiempo="Permanente"
+                            data-tipo="Muteo" data-veces-infringidas="5">+</button></li>
+                </ul>
+
+                <h4>Evadir sanción estando mute (Obligatorio /history)</h4>
+                <ul>
+                    <li><span class="sanction-text">#1 Ban 7d</span> <button class="add-norma-btn"
+                            data-razon="Evadir sanción estando mute (Obligatorio /history)" data-tiempo="7d"
+                            data-tipo="Ban" data-veces-infringidas="1">+</button></li>
+                    <li><span class="sanction-text">#2 Ban 14d</span> <button class="add-norma-btn"
+                            data-razon="Evadir sanción estando mute (Obligatorio /history)" data-tiempo="14d"
+                            data-tipo="Ban" data-veces-infringidas="2">+</button></li>
+                    <li><span class="sanction-text">#3 Ban 30d</span> <button class="add-norma-btn"
+                            data-razon="Evadir sanción estando mute (Obligatorio /history)" data-tiempo="30d"
+                            data-tipo="Ban" data-veces-infringidas="3">+</button></li>
+                    <li><span class="sanction-text">#4 Ban 40d</span> <button class="add-norma-btn"
+                            data-razon="Evadir sanción estando mute (Obligatorio /history)" data-tiempo="40d"
+                            data-tipo="Ban" data-veces-infringidas="4">+</button></li>
+                    <li><span class="sanction-text">#5 Ban Permanente</span> <button class="add-norma-btn"
+                            data-razon="Evadir sanción estando mute (Obligatorio /history)" data-tiempo="Permanente"
+                            data-tipo="Ban" data-veces-infringidas="5">+</button></li>
+                </ul>
+
+                <h4>Publicidad a través de /ah</h4>
+                <ul>
+                    <li><span class="sanction-text">#1 Ban 1d</span> <button class="add-norma-btn"
+                            data-razon="Publicidad a través de /ah" data-tiempo="1d" data-tipo="Ban"
+                            data-veces-infringidas="1">+</button></li>
+                    <li><span class="sanction-text">#2 Ban 3d</span> <button class="add-norma-btn"
+                            data-razon="Publicidad a través de /ah" data-tiempo="3d" data-tipo="Ban"
+                            data-veces-infringidas="2">+</button></li>
+                    <li><span class="sanction-text">#3 Ban 5d</span> <button class="add-norma-btn"
+                            data-razon="Publicidad a través de /ah" data-tiempo="5d" data-tipo="Ban"
+                            data-veces-infringidas="3">+</button></li>
+                    <li><span class="sanction-text">#4 Ban 10d</span> <button class="add-norma-btn"
+                            data-razon="Publicidad a través de /ah" data-tiempo="10d" data-tipo="Ban"
+                            data-veces-infringidas="4">+</button></li>
+                    <li><span class="sanction-text">#5 Ban Permanente</span> <button class="add-norma-btn"
+                            data-razon="Publicidad a través de /ah" data-tiempo="Permanente" data-tipo="Ban"
+                            data-veces-infringidas="5">+</button></li>
+                </ul>
+
+                <h4>Incitar al chat a /hub o spam</h4>
+                <ul>
+                    <li><span class="sanction-text">#1 Kickeo</span> <button class="add-norma-btn"
+                            data-razon="Incitar al chat a /hub o spam" data-tiempo="" data-tipo="Kickeo"
+                            data-veces-infringidas="1">+</button></li>
+                    <li><span class="sanction-text">#2 Muteo 2d</span> <button class="add-norma-btn"
+                            data-razon="Incitar al chat a /hub o spam" data-tiempo="2d" data-tipo="Muteo"
+                            data-veces-infringidas="2">+</button></li>
+                    <li><span class="sanction-text">#3 Muteo 5d</span> <button class="add-norma-btn"
+                            data-razon="Incitar al chat a /hub o spam" data-tiempo="5d" data-tipo="Muteo"
+                            data-veces-infringidas="3">+</button></li>
+                    <li><span class="sanction-text">#4 Muteo 10d</span> <button class="add-norma-btn"
+                            data-razon="Incitar al chat a /hub o spam" data-tiempo="10d" data-tipo="Muteo"
+                            data-veces-infringidas="4">+</button></li>
+                    <li><span class="sanction-text">#5 Muteo Permanente</span> <button class="add-norma-btn"
+                            data-razon="Incitar al chat a /hub o spam" data-tiempo="Permanente" data-tipo="Muteo"
+                            data-veces-infringidas="5">+</button></li>
+                </ul>
+
+                <h4>Renombrado ofensivo de objetos</h4>
+                <ul>
+                    <li><span class="sanction-text">#1 Warn y /msg (si es posible)</span> <button class="add-norma-btn"
+                            data-razon="Renombrado ofensivo de objetos" data-tiempo="" data-tipo="Warn"
+                            data-veces-infringidas="1">+</button></li>
+                    <li><span class="sanction-text">#2 Ban 3d</span> <button class="add-norma-btn"
+                            data-razon="Renombrado ofensivo de objetos" data-tiempo="3d" data-tipo="Ban"
+                            data-veces-infringidas="2">+</button></li>
+                    <li><span class="sanction-text">#3 Ban 5d</span> <button class="add-norma-btn"
+                            data-razon="Renombrado ofensivo de objetos" data-tiempo="5d" data-tipo="Ban"
+                            data-veces-infringidas="3">+</button></li>
+                    <li><span class="sanction-text">#4 Ban 10d</span> <button class="add-norma-btn"
+                            data-razon="Renombrado ofensivo de objetos" data-tiempo="10d" data-tipo="Ban"
+                            data-veces-infringidas="4">+</button></li>
+                    <li><span class="sanction-text">#5 Ban Permanente</span> <button class="add-norma-btn"
+                            data-razon="Renombrado ofensivo de objetos" data-tiempo="Permanente" data-tipo="Ban"
+                            data-veces-infringidas="5">+</button></li>
+                </ul>
+
+                <h4>Tags / Skin / Nick inapropiados</h4>
+                <ul>
+                    <li><span class="sanction-text">#1 Kickeo con el motivo</span> <button class="add-norma-btn"
+                            data-razon="Tags / Skin / Nick inapropiados" data-tiempo="" data-tipo="Kickeo"
+                            data-veces-infringidas="1">+</button></li>
+                    <li><span class="sanction-text">#2 Ban 1d</span> <button class="add-norma-btn"
+                            data-razon="Tags / Skin / Nick inapropiados" data-tiempo="1d" data-tipo="Ban"
+                            data-veces-infringidas="2">+</button></li>
+                    <li><span class="sanction-text">#3 Ban 5d</span> <button class="add-norma-btn"
+                            data-razon="Tags / Skin / Nick inapropiados" data-tiempo="5d" data-tipo="Ban"
+                            data-veces-infringidas="3">+</button></li>
+                    <li><span class="sanction-text">#4 Ban 10d</span> <button class="add-norma-btn"
+                            data-razon="Tags / Skin / Nick inapropiados" data-tiempo="10d" data-tipo="Ban"
+                            data-veces-infringidas="4">+</button></li>
+                    <li><span class="sanction-text">#5 Ban 20d</span> <button class="add-norma-btn"
+                            data-razon="Tags / Skin / Nick inapropiados" data-tiempo="20d" data-tipo="Ban"
+                            data-veces-infringidas="5">+</button></li>
+                    <li><span class="sanction-text">#6 Ban permanente</span> <button class="add-norma-btn"
+                            data-razon="Tags / Skin / Nick inapropiados" data-tiempo="Permanente" data-tipo="Ban"
+                            data-veces-infringidas="6">+</button></li>
+                </ul>
+
+                <h4>Grifeo Inside</h4>
+                <ul>
+                    <li><span class="sanction-text">#1 Ban 30d</span> <button class="add-norma-btn"
+                            data-razon="Grifeo Inside" data-tiempo="30d" data-tipo="Ban"
+                            data-veces-infringidas="1">+</button></li>
+                    <li><span class="sanction-text">#2 Ban 60d</span> <button class="add-norma-btn"
+                            data-razon="Grifeo Inside" data-tiempo="60d" data-tipo="Ban"
+                            data-veces-infringidas="2">+</button></li>
+                    <li><span class="sanction-text">#3 Ban 90d</span> <button class="add-norma-btn"
+                            data-razon="Grifeo Inside" data-tiempo="90d" data-tipo="Ban"
+                            data-veces-infringidas="3">+</button></li>
+                    <li><span class="sanction-text">#4 Ban 120d</span> <button class="add-norma-btn"
+                            data-razon="Grifeo Inside" data-tiempo="120d" data-tipo="Ban"
+                            data-veces-infringidas="4">+</button></li>
+                    <li><span class="sanction-text">#5 Ban Permanente</span> <button class="add-norma-btn"
+                            data-razon="Grifeo Inside" data-tiempo="Permanente" data-tipo="Ban"
+                            data-veces-infringidas="5">+</button></li>
+                </ul>
+
+                <h4>Estafa / Grifeo Outside / Matar en protección</h4>
+                <ul>
+                    <li><span class="sanction-text">#1 Ban 20d</span> <button class="add-norma-btn"
+                            data-razon="Estafa / Grifeo Outside / Matar en protección" data-tiempo="20d" data-tipo="Ban"
+                            data-veces-infringidas="1">+</button></li>
+                    <li><span class="sanction-text">#2 Ban 40d</span> <button class="add-norma-btn"
+                            data-razon="Estafa / Grifeo Outside / Matar en protección" data-tiempo="40d" data-tipo="Ban"
+                            data-veces-infringidas="2">+</button></li>
+                    <li><span class="sanction-text">#3 Ban 60d</span> <button class="add-norma-btn"
+                            data-razon="Estafa / Grifeo Outside / Matar en protección" data-tiempo="60d" data-tipo="Ban"
+                            data-veces-infringidas="3">+</button></li>
+                    <li><span class="sanction-text">#4 Ban 80d</span> <button class="add-norma-btn"
+                            data-razon="Estafa / Grifeo Outside / Matar en protección" data-tiempo="80d" data-tipo="Ban"
+                            data-veces-infringidas="4">+</button></li>
+                    <li><span class="sanction-text">#5 Ban Permanente</span> <button class="add-norma-btn"
+                            data-razon="Estafa / Grifeo Outside / Matar en protección" data-tiempo="Permanente"
+                            data-tipo="Ban" data-veces-infringidas="5">+</button></li>
+                </ul>
+
+                <h4>Realizar (o intentar) Tpakill o /pwKill</h4>
+                <ul>
+                    <li><span class="sanction-text">#1 Ban 20d</span> <button class="add-norma-btn"
+                            data-razon="Realizar (o intentar) Tpakill o /pwKill" data-tiempo="20d" data-tipo="Ban"
+                            data-veces-infringidas="1">+</button></li>
+                    <li><span class="sanction-text">#2 Ban 40d</span> <button class="add-norma-btn"
+                            data-razon="Realizar (o intentar) Tpakill o /pwKill" data-tiempo="40d" data-tipo="Ban"
+                            data-veces-infringidas="2">+</button></li>
+                    <li><span class="sanction-text">#3 Ban 60d</span> <button class="add-norma-btn"
+                            data-razon="Realizar (o intentar) Tpakill o /pwKill" data-tiempo="60d" data-tipo="Ban"
+                            data-veces-infringidas="3">+</button></li>
+                    <li><span class="sanction-text">#4 Ban 80d</span> <button class="add-norma-btn"
+                            data-razon="Realizar (o intentar) Tpakill o /pwKill" data-tiempo="80d" data-tipo="Ban"
+                            data-veces-infringidas="4">+</button></li>
+                    <li><span class="sanction-text">#5 Ban Permanente</span> <button class="add-norma-btn"
+                            data-razon="Realizar (o intentar) Tpakill o /pwKill" data-tiempo="Permanente"
+                            data-tipo="Ban" data-veces-infringidas="5">+</button></li>
+                </ul>
+
+                <h4>Mentir al Staff</h4>
+                <ul>
+                    <li><span class="sanction-text">#1 Mute 7d</span> <button class="add-norma-btn"
+                            data-razon="Mentir al Staff" data-tiempo="7d" data-tipo="Mute"
+                            data-veces-infringidas="1">+</button></li>
+                    <li><span class="sanction-text">#2 Ban 10d</span> <button class="add-norma-btn"
+                            data-razon="Mentir al Staff" data-tiempo="10d" data-tipo="Ban"
+                            data-veces-infringidas="2">+</button></li>
+                    <li><span class="sanction-text">#3 Ban 30d</span> <button class="add-norma-btn"
+                            data-razon="Mentir al Staff" data-tiempo="30d" data-tipo="Ban"
+                            data-veces-infringidas="3">+</button></li>
+                    <li><span class="sanction-text">#4 Ban Permanente</span> <button class="add-norma-btn"
+                            data-razon="Mentir al Staff" data-tiempo="Permanente" data-tipo="Ban"
+                            data-veces-infringidas="4">+</button></li>
+                </ul>
+
+                <h4>Cambiarse el tag para hacerse pasar por otro</h4>
+                <ul>
+                    <li><span class="sanction-text">#1 Kickeo</span> <button class="add-norma-btn"
+                            data-razon="Cambiarse el tag para hacerse pasar por otro" data-tiempo="" data-tipo="Kickeo"
+                            data-veces-infringidas="1">+</button></li>
+                    <li><span class="sanction-text">#2 Muteo 3d</span> <button class="add-norma-btn"
+                            data-razon="Cambiarse el tag para hacerse pasar por otro" data-tiempo="3d" data-tipo="Muteo"
+                            data-veces-infringidas="2">+</button></li>
+                    <li><span class="sanction-text">#3 Baneo 5d</span> <button class="add-norma-btn"
+                            data-razon="Cambiarse el tag para hacerse pasar por otro" data-tiempo="5d" data-tipo="Baneo"
+                            data-veces-infringidas="3">+</button></li>
+                    <li><span class="sanction-text">#4 Baneo 10d</span> <button class="add-norma-btn"
+                            data-razon="Cambiarse el tag para hacerse pasar por otro" data-tiempo="10d"
+                            data-tipo="Baneo" data-veces-infringidas="4">+</button></li>
+                    <li><span class="sanction-text">#5 Baneo permanente</span> <button class="add-norma-btn"
+                            data-razon="Cambiarse el tag para hacerse pasar por otro" data-tiempo="Permanente"
+                            data-tipo="Baneo" data-veces-infringidas="5">+</button></li>
+                </ul>
+
+                <h4>Dupeo</h4>
+                <ul>
+                    <li><span class="sanction-text">#1 Ban Permanente</span> <button class="add-norma-btn"
+                            data-razon="Dupeo" data-tiempo="Permanente" data-tipo="Ban"
+                            data-veces-infringidas="1">+</button></li>
+                </ul>
+
+                <h4>Intento o realización de dupeo en /rollback / estafas</h4>
+                <ul>
+                    <li><span class="sanction-text">#1 Ban 60d</span> <button class="add-norma-btn"
+                            data-razon="Intento o realización de dupeo en /rollback / estafas" data-tiempo="60d"
+                            data-tipo="Ban" data-veces-infringidas="1">+</button></li>
+                    <li><span class="sanction-text">#2 Ban 130d</span> <button class="add-norma-btn"
+                            data-razon="Intento o realización de dupeo en /rollback / estafas" data-tiempo="130d"
+                            data-tipo="Ban" data-veces-infringidas="2">+</button></li>
+                    <li><span class="sanction-text">#3 Ban Permanente</span> <button class="add-norma-btn"
+                            data-razon="Intento o realización de dupeo en /rollback / estafas" data-tiempo="Permanente"
+                            data-tipo="Ban" data-veces-infringidas="3">+</button></li>
+                </ul>
+
+                <h4>Uso de máquina Anti-AFK</h4>
+                <ul>
+                    <li><span class="sanction-text">#1 Ban 2d</span> <button class="add-norma-btn"
+                            data-razon="Uso de máquina Anti-AFK" data-tiempo="2d" data-tipo="Ban"
+                            data-veces-infringidas="1">+</button></li>
+                    <li><span class="sanction-text">#2 Ban 5d</span> <button class="add-norma-btn"
+                            data-razon="Uso de máquina Anti-AFK" data-tiempo="5d" data-tipo="Ban"
+                            data-veces-infringidas="2">+</button></li>
+                    <li><span class="sanction-text">#3 Ban 10d</span> <button class="add-norma-btn"
+                            data-razon="Uso de máquina Anti-AFK" data-tiempo="10d" data-tipo="Ban"
+                            data-veces-infringidas="3">+</button></li>
+                    <li><span class="sanction-text">#4 Ban 15d</span> <button class="add-norma-btn"
+                            data-razon="Uso de máquina Anti-AFK" data-tiempo="15d" data-tipo="Ban"
+                            data-veces-infringidas="4">+</button></li>
+                    <li><span class="sanction-text">#5 Ban Permanente</span> <button class="add-norma-btn"
+                            data-razon="Uso de máquina Anti-AFK" data-tiempo="Permanente" data-tipo="Ban"
+                            data-veces-infringidas="5">+</button></li>
+                </ul>
+
+                <h4>Maquina de lag</h4>
+                <ul>
+                    <li><span class="sanction-text">#1 Ban 15d</span> <button class="add-norma-btn"
+                            data-razon="Maquina de lag" data-tiempo="15d" data-tipo="Ban"
+                            data-veces-infringidas="1">+</button></li>
+                    <li><span class="sanction-text">#2 Ban 20d</span> <button class="add-norma-btn"
+                            data-razon="Maquina de lag" data-tiempo="20d" data-tipo="Ban"
+                            data-veces-infringidas="2">+</button></li>
+                    <li><span class="sanction-text">#3 Ban 30d</span> <button class="add-norma-btn"
+                            data-razon="Maquina de lag" data-tiempo="30d" data-tipo="Ban"
+                            data-veces-infringidas="3">+</button></li>
+                    <li><span class="sanction-text">#4 Ban 60d</span> <button class="add-norma-btn"
+                            data-razon="Maquina de lag" data-tiempo="60d" data-tipo="Ban"
+                            data-veces-infringidas="4">+</button></li>
+                    <li><span class="sanction-text">#5 Ban Permanente</span> <button class="add-norma-btn"
+                            data-razon="Maquina de lag" data-tiempo="Permanente" data-tipo="Ban"
+                            data-veces-infringidas="5">+</button></li>
+                </ul>
+
+                <h4>Comprometer la seguridad de usuarios/servidor</h4>
+                <ul>
+                    <li><span class="sanction-text">#1 Ban Permanente</span> <button class="add-norma-btn"
+                            data-razon="Comprometer la seguridad de usuarios/servidor" data-tiempo="Permanente"
+                            data-tipo="Ban" data-veces-infringidas="1">+</button></li>
+                </ul>
+
+                <h4>Falta de respeto al servidor / staff</h4>
+                <ul>
+                    <li><span class="sanction-text">#1 Muteo 10d</span> <button class="add-norma-btn"
+                            data-razon="Falta de respeto al servidor / staff" data-tiempo="10d" data-tipo="Muteo"
+                            data-veces-infringidas="1">+</button></li>
+                    <li><span class="sanction-text">#2 Muteo 30d</span> <button class="add-norma-btn"
+                            data-razon="Falta de respeto al servidor / staff" data-tiempo="30d" data-tipo="Muteo"
+                            data-veces-infringidas="2">+</button></li>
+                    <li><span class="sanction-text">#3 Muteo Permanente</span> <button class="add-norma-btn"
+                            data-razon="Falta de respeto al servidor / staff" data-tiempo="Permanente" data-tipo="Muteo"
+                            data-veces-infringidas="3">+</button></li>
+                </ul>
+
+                <h4>Vender / Comercializar ítems o cuentas</h4>
+                <ul>
+                    <li><span class="sanction-text">#1 Mute Permanente</span> <button class="add-norma-btn"
+                            data-razon="Vender / Comercializar ítems o cuentas" data-tiempo="Permanente"
+                            data-tipo="Mute" data-veces-infringidas="1">+</button></li>
+                </ul>
+
+                <h4>Publicidad fuera de Dioses (Discord/IPs)</h4>
+                <ul>
+                    <li><span class="sanction-text">#1 Warn + Aviso por /msg</span> <button class="add-norma-btn"
+                            data-razon="Publicidad fuera de Dioses (Discord/IPs)" data-tiempo="" data-tipo="Warn"
+                            data-veces-infringidas="1">+</button></li>
+                    <li><span class="sanction-text">#2 Muteo 30d</span> <button class="add-norma-btn"
+                            data-razon="Publicidad fuera de Dioses (Discord/IPs)" data-tiempo="30d" data-tipo="Muteo"
+                            data-veces-infringidas="2">+</button></li>
+                    <li><span class="sanction-text">#3 Muteo Permanente</span> <button class="add-norma-btn"
+                            data-razon="Publicidad fuera de Dioses (Discord/IPs)" data-tiempo="Permanente"
+                            data-tipo="Muteo" data-veces-infringidas="3">+</button></li>
+                </ul>
+
+                <h4>Molestar / Hostigar usuarios</h4>
+                <ul>
+                    <li><span class="sanction-text">#1 Ban 1d</span> <button class="add-norma-btn"
+                            data-razon="Molestar / Hostigar usuarios" data-tiempo="1d" data-tipo="Ban"
+                            data-veces-infringidas="1">+</button></li>
+                    <li><span class="sanction-text">#2 Ban 3d</span> <button class="add-norma-btn"
+                            data-razon="Molestar / Hostigar usuarios" data-tiempo="3d" data-tipo="Ban"
+                            data-veces-infringidas="2">+</button></li>
+                    <li><span class="sanction-text">#3 Ban 5d</span> <button class="add-norma-btn"
+                            data-razon="Molestar / Hostigar usuarios" data-tiempo="5d" data-tipo="Ban"
+                            data-veces-infringidas="3">+</button></li>
+                    <li><span class="sanction-text">#4 Ban 10d</span> <button class="add-norma-btn"
+                            data-razon="Molestar / Hostigar usuarios" data-tiempo="10d" data-tipo="Ban"
+                            data-veces-infringidas="4">+</button></li>
+                    <li><span class="sanction-text">#5 Ban Permanente</span> <button class="add-norma-btn"
+                            data-razon="Molestar / Hostigar usuarios" data-tiempo="Permanente" data-tipo="Ban"
+                            data-veces-infringidas="5">+</button></li>
+                </ul>
+
+            </div>
+
+            <div id="discord-rules" class="norma-section">
+                <h4>Uso indebido del chat (Spam / Flood)</h4>
+                <ul>
+                    <li><span class="sanction-text">#1 Advertencia + /moderation warn</span> <button
+                            class="add-norma-btn" data-razon="Uso indebido del chat (Spam / Flood)" data-tiempo=""
+                            data-tipo="Advertencia" data-veces-infringidas="1">+</button></li>
+                    <li><span class="sanction-text">#2 Muteo 1d</span> <button class="add-norma-btn"
+                            data-razon="Uso indebido del chat (Spam / Flood)" data-tiempo="1d" data-tipo="Muteo"
+                            data-veces-infringidas="2">+</button></li>
+                    <li><span class="sanction-text">#3 Muteo 3d</span> <button class="add-norma-btn"
+                            data-razon="Uso indebido del chat (Spam / Flood)" data-tiempo="3d" data-tipo="Muteo"
+                            data-veces-infringidas="3">+</button></li>
+                    <li><span class="sanction-text">#4 Muteo Permanente</span> <button class="add-norma-btn"
+                            data-razon="Uso indebido del chat (Spam / Flood)" data-tiempo="Permanente" data-tipo="Muteo"
+                            data-veces-infringidas="4">+</button></li>
+                </ul>
+
+                <h4>Uso indebido del chat (Toxicidad / Insultos / Amenazas)</h4>
+                <ul>
+                    <li><span class="sanction-text">#1 Muteo 1d</span> <button class="add-norma-btn"
+                            data-razon="Uso indebido del chat (Toxicidad / Insultos / Amenazas)" data-tiempo="1d"
+                            data-tipo="Muteo" data-veces-infringidas="1">+</button></li>
+                    <li><span class="sanction-text">#2 Muteo 3d</span> <button class="add-norma-btn"
+                            data-razon="Uso indebido del chat (Toxicidad / Insultos / Amenazas)" data-tiempo="3d"
+                            data-tipo="Muteo" data-veces-infringidas="2">+</button></li>
+                    <li><span class="sanction-text">#3 Muteo 10d</span> <button class="add-norma-btn"
+                            data-razon="Uso indebido del chat (Toxicidad / Insultos / Amenazas)" data-tiempo="10d"
+                            data-tipo="Muteo" data-veces-infringidas="3">+</button></li>
+                    <li><span class="sanction-text">#4 Muteo 20d</span> <button class="add-norma-btn"
+                            data-razon="Uso indebido del chat (Toxicidad / Insultos / Amenazas)" data-tiempo="20d"
+                            data-tipo="Muteo" data-veces-infringidas="4">+</button></li>
+                    <li><span class="sanction-text">#5 Muteo Permanente</span> <button class="add-norma-btn"
+                            data-razon="Uso indebido del chat (Toxicidad / Insultos / Amenazas)"
+                            data-tiempo="Permanente" data-tipo="Muteo" data-veces-infringidas="5">+</button></li>
+                </ul>
+
+                <h4>Comportamiento inadecuado en chat público (Comandos, Links, Anuncios)</h4>
+                <ul>
+                    <li><span class="sanction-text">#1 Muteo 1d</span> <button class="add-norma-btn"
+                            data-razon="Comportamiento inadecuado en chat público (Comandos, Links, Anuncios)"
+                            data-tiempo="1d" data-tipo="Muteo" data-veces-infringidas="1">+</button></li>
+                    <li><span class="sanction-text">#2 Muteo 3d</span> <button class="add-norma-btn"
+                            data-razon="Comportamiento inadecuado en chat público (Comandos, Links, Anuncios)"
+                            data-tiempo="3d" data-tipo="Muteo" data-veces-infringidas="2">+</button></li>
+                    <li><span class="sanction-text">#3 Muteo 7d</span> <button class="add-norma-btn"
+                            data-razon="Comportamiento inadecuado en chat público (Comandos, Links, Anuncios)"
+                            data-tiempo="7d" data-tipo="Muteo" data-veces-infringidas="3">+</button></li>
+                    <li><span class="sanction-text">#4 Baneo Permanente</span> <button class="add-norma-btn"
+                            data-razon="Comportamiento inadecuado en chat público (Comandos, Links, Anuncios)"
+                            data-tiempo="Permanente" data-tipo="Baneo" data-veces-infringidas="4">+</button></li>
+                </ul>
+
+                <h4>Comportamiento inadecuado en canales de voz</h4>
+                <ul>
+                    <li><span class="sanction-text">#1 Kickeo</span> <button class="add-norma-btn"
+                            data-razon="Comportamiento inadecuado en canales de voz" data-tiempo="" data-tipo="Kickeo"
+                            data-veces-infringidas="1">+</button></li>
+                    <li><span class="sanction-text">#2 Kickeo</span> <button class="add-norma-btn"
+                            data-razon="Comportamiento inadecuado en canales de voz" data-tiempo="" data-tipo="Kickeo"
+                            data-veces-infringidas="2">+</button></li>
+                    <li><span class="sanction-text">#3 Aislamiento 7d</span> <button class="add-norma-btn"
+                            data-razon="Comportamiento inadecuado en canales de voz" data-tiempo="7d"
+                            data-tipo="Aislamiento" data-veces-infringidas="3">+</button></li>
+                    <li><span class="sanction-text">#4 Baneo Permanente</span> <button class="add-norma-btn"
+                            data-razon="Comportamiento inadecuado en canales de voz" data-tiempo="Permanente"
+                            data-tipo="Baneo" data-veces-infringidas="4">+</button></li>
+                </ul>
+
+                <h4>Mentir o faltar el respeto al servidor / staff</h4>
+                <ul>
+                    <li><span class="sanction-text">#1 Muteo 10d</span> <button class="add-norma-btn"
+                            data-razon="Mentir o faltar el respeto al servidor / staff" data-tiempo="10d"
+                            data-tipo="Muteo" data-veces-infringidas="1">+</button></li>
+                    <li><span class="sanction-text">#2 Muteo 14d</span> <button class="add-norma-btn"
+                            data-razon="Mentir o faltar el respeto al servidor / staff" data-tiempo="14d"
+                            data-tipo="Muteo" data-veces-infringidas="2">+</button></li>
+                    <li><span class="sanction-text">#3 Muteo Permanente</span> <button class="add-norma-btn"
+                            data-razon="Mentir o faltar el respeto al servidor / staff" data-tiempo="Permanente"
+                            data-tipo="Muteo" data-veces-infringidas="3">+</button></li>
+                </ul>
+
+                <h4>Uso indebido del sistema de tickets</h4>
+                <ul>
+                    <li><span class="sanction-text">#1 Advertencia + /moderation warn</span> <button
+                            class="add-norma-btn" data-razon="Uso indebido del sistema de tickets" data-tiempo=""
+                            data-tipo="Advertencia" data-veces-infringidas="1">+</button></li>
+                    <li><span class="sanction-text">#2 Bloqueo 7d + /moderation warn</span> <button
+                            class="add-norma-btn" data-razon="Uso indebido del sistema de tickets" data-tiempo="7d"
+                            data-tipo="Bloqueo" data-veces-infringidas="2">+</button></li>
+                    <li><span class="sanction-text">#3 Bloqueo 30d + /moderation warn</span> <button
+                            class="add-norma-btn" data-razon="Uso indebido del sistema de tickets" data-tiempo="30d"
+                            data-tipo="Bloqueo" data-veces-infringidas="3">+</button></li>
+                    <li><span class="sanction-text">#4 Baneo Permanente</span> <button class="add-norma-btn"
+                            data-razon="Uso indebido del sistema de tickets" data-tiempo="Permanente" data-tipo="Baneo"
+                            data-veces-infringidas="4">+</button></li>
+                </ul>
+
+                <h4>Mal uso de canales (sugerencias, comandos, multimedia, economía)</h4>
+                <ul>
+                    <li><span class="sanction-text">#1 Advertencia + /moderation warn</span> <button
+                            class="add-norma-btn"
+                            data-razon="Mal uso de canales (sugerencias, comandos, multimedia, economía)" data-tiempo=""
+                            data-tipo="Advertencia" data-veces-infringidas="1">+</button></li>
+                    <li><span class="sanction-text">#2 Muteo 7d</span> <button class="add-norma-btn"
+                            data-razon="Mal uso de canales (sugerencias, comandos, multimedia, economía)"
+                            data-tiempo="7d" data-tipo="Muteo" data-veces-infringidas="2">+</button></li>
+                    <li><span class="sanction-text">#3 Kickeo</span> <button class="add-norma-btn"
+                            data-razon="Mal uso de canales (sugerencias, comandos, multimedia, economía)" data-tiempo=""
+                            data-tipo="Kickeo" data-veces-infringidas="3">+</button></li>
+                    <li><span class="sanction-text">#4 Baneo Permanente</span> <button class="add-norma-btn"
+                            data-razon="Mal uso de canales (sugerencias, comandos, multimedia, economía)"
+                            data-tiempo="Permanente" data-tipo="Baneo" data-veces-infringidas="4">+</button></li>
+                </ul>
+
+                <h4>Uso de modificaciones (macros, etc) en chat de economía</h4>
+                <ul>
+                    <li><span class="sanction-text">#1 Muteo 1d</span> <button class="add-norma-btn"
+                            data-razon="Uso de modificaciones (macros, etc) en chat de economía" data-tiempo="1d"
+                            data-tipo="Muteo" data-veces-infringidas="1">+</button></li>
+                    <li><span class="sanction-text">#2 Muteo 3d</span> <button class="add-norma-btn"
+                            data-razon="Uso de modificaciones (macros, etc) en chat de economía" data-tiempo="3d"
+                            data-tipo="Muteo" data-veces-infringidas="2">+</button></li>
+                    <li><span class="sanction-text">#3 Muteo 7d</span> <button class="add-norma-btn"
+                            data-razon="Uso de modificaciones (macros, etc) en chat de economía" data-tiempo="7d"
+                            data-tipo="Muteo" data-veces-infringidas="3">+</button></li>
+                    <li><span class="sanction-text">#4 Baneo Permanente</span> <button class="add-norma-btn"
+                            data-razon="Uso de modificaciones (macros, etc) en chat de economía"
+                            data-tiempo="Permanente" data-tipo="Baneo" data-veces-infringidas="4">+</button></li>
+                </ul>
+
+                <h4>Uso indebido de etiqueta de servidor</h4>
+                <ul>
+                    <li><span class="sanction-text">#1 Kickeo</span> <button class="add-norma-btn"
+                            data-razon="Uso indebido de etiqueta de servidor" data-tiempo="" data-tipo="Kickeo"
+                            data-veces-infringidas="1">+</button></li>
+                    <li><span class="sanction-text">#2 Baneo Permanente</span> <button class="add-norma-btn"
+                            data-razon="Uso indebido de etiqueta de servidor" data-tiempo="Permanente" data-tipo="Baneo"
+                            data-veces-infringidas="2">+</button></li>
+                </ul>
+
+                <h4>Suplantar la identidad del Staff</h4>
+                <ul>
+                    <li><span class="sanction-text">#1 Muteo 3d</span> <button class="add-norma-btn"
+                            data-razon="Suplantar la identidad del Staff" data-tiempo="3d" data-tipo="Muteo"
+                            data-veces-infringidas="1">+</button></li>
+                    <li><span class="sanction-text">#2 Muteo 7d</span> <button class="add-norma-btn"
+                            data-razon="Suplantar la identidad del Staff" data-tiempo="7d" data-tipo="Muteo"
+                            data-veces-infringidas="2">+</button></li>
+                    <li><span class="sanction-text">#3 Muteo Permanente</span> <button class="add-norma-btn"
+                            data-razon="Suplantar la identidad del Staff" data-tiempo="Permanente" data-tipo="Muteo"
+                            data-veces-infringidas="3">+</button></li>
+                </ul>
+
+                <h4>Foto o nombre de perfil inadecuado</h4>
+                <ul>
+                    <li><span class="sanction-text">#1 Warn</span> <button class="add-norma-btn"
+                            data-razon="Foto o nombre de perfil inadecuado" data-tiempo="" data-tipo="Warn"
+                            data-veces-infringidas="1">+</button></li>
+                    <li><span class="sanction-text">#2 Expulsión</span> <button class="add-norma-btn"
+                            data-razon="Foto o nombre de perfil inadecuado" data-tiempo="" data-tipo="Expulsión"
+                            data-veces-infringidas="2">+</button></li>
+                    <li><span class="sanction-text">#3 Baneo Permanente</span> <button class="add-norma-btn"
+                            data-razon="Foto o nombre de perfil inadecuado" data-tiempo="Permanente" data-tipo="Baneo"
+                            data-veces-infringidas="3">+</button></li>
+                </ul>
+
+                <h4>Uso de multicuentas para farmear comandos</h4>
+                <ul>
+                    <li><span class="sanction-text">#1 Muteo 1d</span> <button class="add-norma-btn"
+                            data-razon="Uso de multicuentas para farmear comandos" data-tiempo="1d" data-tipo="Muteo"
+                            data-veces-infringidas="1">+</button></li>
+                    <li><span class="sanction-text">#2 Muteo 3d</span> <button class="add-norma-btn"
+                            data-razon="Uso de multicuentas para farmear comandos" data-tiempo="3d" data-tipo="Muteo"
+                            data-veces-infringidas="2">+</button></li>
+                    <li><span class="sanction-text">#3 Muteo 7d</span> <button class="add-norma-btn"
+                            data-razon="Uso de multicuentas para farmear comandos" data-tiempo="7d" data-tipo="Muteo"
+                            data-veces-infringidas="3">+</button></li>
+                    <li><span class="sanction-text">#4 Baneo Permanente</span> <button class="add-norma-btn"
+                            data-razon="Uso de multicuentas para farmear comandos" data-tiempo="Permanente"
+                            data-tipo="Baneo" data-veces-infringidas="4">+</button></li>
+                </ul>
+
+                <h4>Evadir sanción estando mute (no aplica en tickets de apelaciones)</h4>
+                <ul>
+                    <li><span class="sanction-text">#1 Baneo Permanente</span> <button class="add-norma-btn"
+                            data-razon="Evadir sanción estando mute (no aplica en tickets de apelaciones)"
+                            data-tiempo="Permanente" data-tipo="Baneo" data-veces-infringidas="1">+</button></li>
+                </ul>
+
+                <h4>Evadir sanción (teniendo otra cuenta baneada):</h4>
+                <ul>
+                    <li><span class="sanction-text">#1 Muteo 10d</span> <button class="add-norma-btn"
+                            data-razon="Evadir sanción (teniendo otra cuenta baneada)" data-tiempo="10d"
+                            data-tipo="Muteo" data-veces-infringidas="1">+</button></li>
+                    <li><span class="sanction-text">#2 Muteo 30d</span> <button class="add-norma-btn"
+                            data-razon="Evadir sanción (teniendo otra cuenta baneada)" data-tiempo="30d"
+                            data-tipo="Muteo" data-veces-infringidas="2">+</button></li>
+                    <li><span class="sanction-text">#3 Baneo Permanente</span> <button class="add-norma-btn"
+                            data-razon="Evadir sanción (teniendo otra cuenta baneada)" data-tiempo="Permanente"
+                            data-tipo="Baneo" data-veces-infringidas="3">+</button></li>
+                </ul>
+
+                <h4>Spam por MD</h4>
+                <ul>
+                    <li><span class="sanction-text">#1 Kickeo</span> <button class="add-norma-btn"
+                            data-razon="Spam por MD" data-tiempo="" data-tipo="Kickeo"
+                            data-veces-infringidas="1">+</button></li>
+                    <li><span class="sanction-text">#2 Kickeo</span> <button class="add-norma-btn"
+                            data-razon="Spam por MD" data-tiempo="" data-tipo="Kickeo"
+                            data-veces-infringidas="2">+</button></li>
+                    <li><span class="sanction-text">#3 Muteo 7d</span> <button class="add-norma-btn"
+                            data-razon="Spam por MD" data-tiempo="7d" data-tipo="Muteo"
+                            data-veces-infringidas="3">+</button></li>
+                    <li><span class="sanction-text">#4 Baneo Permanente</span> <button class="add-norma-btn"
+                            data-razon="Spam por MD" data-tiempo="Permanente" data-tipo="Baneo"
+                            data-veces-infringidas="4">+</button></li>
+                </ul>
+
+                <h4>Promocionar servidores externos a Nautic</h4>
+                <ul>
+                    <li><span class="sanction-text">#1 Advertencia + /moderation warn</span> <button
+                            class="add-norma-btn" data-razon="Promocionar servidores externos a Nautic" data-tiempo=""
+                            data-tipo="Advertencia" data-veces-infringidas="1">+</button></li>
+                    <li><span class="sanction-text">#2 Muteo 7d</span> <button class="add-norma-btn"
+                            data-razon="Promocionar servidores externos a Nautic" data-tiempo="7d" data-tipo="Muteo"
+                            data-veces-infringidas="2">+</button></li>
+                    <li><span class="sanction-text">#3 Muteo Permanente</span> <button class="add-norma-btn"
+                            data-razon="Promocionar servidores externos a Nautic" data-tiempo="Permanente"
+                            data-tipo="Muteo" data-veces-infringidas="3">+</button></li>
+                </ul>
+
+                <h4>Vender / Comercializar ítems o cuentas</h4>
+                <ul>
+                    <li><span class="sanction-text">#1 Baneo Permanente</span> <button class="add-norma-btn"
+                            data-razon="Vender / Comercializar ítems o cuentas" data-tiempo="Permanente"
+                            data-tipo="Baneo" data-veces-infringidas="1">+</button></li>
+                </ul>
+
+                <h4>Promocionar invite por rango</h4>
+                <ul>
+                    <li><span class="sanction-text">#1 Muteo 10d</span> <button class="add-norma-btn"
+                            data-razon="Promocionar invite por rango" data-tiempo="10d" data-tipo="Muteo"
+                            data-veces-infringidas="1">+</button></li>
+                    <li><span class="sanction-text">#2 Muteo 30d</span> <button class="add-norma-btn"
+                            data-razon="Promocionar invite por rango" data-tiempo="30d" data-tipo="Muteo"
+                            data-veces-infringidas="2">+</button></li>
+                    <li><span class="sanction-text">#3 Muteo Permanente</span> <button class="add-norma-btn"
+                            data-razon="Promocionar invite por rango" data-tiempo="Permanente" data-tipo="Muteo"
+                            data-veces-infringidas="3">+</button></li>
+                </ul>
+
+                <h4>Comprometer la seguridad de usuarios/servidor</h4>
+                <ul>
+                    <li><span class="sanction-text">#1 Muteo Permanente</span> <button class="add-norma-btn"
+                            data-razon="Comprometer la seguridad de usuarios/servidor" data-tiempo="Permanente"
+                            data-tipo="Muteo" data-veces-infringidas="1">+</button></li>
+                </ul>
+
+                <h4>Amenazas contra el servidor (Doxx / IPLoguer / Links engañosos)</h4>
+                <ul>
+                    <li><span class="sanction-text">#1 Baneo Permanente</span> <button class="add-norma-btn"
+                            data-razon="Amenazas contra el servidor (Doxx / IPLoguer / Links engañosos)"
+                            data-tiempo="Permanente" data-tipo="Baneo" data-veces-infringidas="1">+</button></li>
+                </ul>
+
+                <h4>Incumplir los TOS de Discord</h4>
+                <ul>
+                    <li><span class="sanction-text">#1 Baneo Permanente</span> <button class="add-norma-btn"
+                            data-razon="Incumplir los TOS de Discord" data-tiempo="Permanente" data-tipo="Baneo"
+                            data-veces-infringidas="1">+</button></li>
+                </ul>
+
+                <h4>Enviar / Mostrar contenido +18 / NSFW / GORE</h4>
+                <ul>
+                    <li><span class="sanction-text">#1 Baneo Permanente</span> <button class="add-norma-btn"
+                            data-razon="Enviar / Mostrar contenido +18 / NSFW / GORE" data-tiempo="Permanente"
+                            data-tipo="Baneo" data-veces-infringidas="1">+</button></li>
+                </ul>
+
+                <h4>Proporcionar cualquier dato del Discord de staff</h4>
+                <ul>
+                    <li><span class="sanction-text">#1 Baneo Permanente</span> <button class="add-norma-btn"
+                            data-razon="Proporcionar cualquier dato del Discord de staff" data-tiempo="Permanente"
+                            data-tipo="Baneo" data-veces-infringidas="1">+</button></li>
+                </ul>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function _0x1164(_0x48c651,_0x59f4f6){const _0x581a81=_0x581a();return _0x1164=function(_0x116489,_0x29d992){_0x116489=_0x116489-0x10b;let _0x3fdf02=_0x581a81[_0x116489];return _0x3fdf02;},_0x1164(_0x48c651,_0x59f4f6);}const _0x10fd2e=_0x1164;(function(_0x302d5c,_0xc6f0ad){const _0x37f65d=_0x1164,_0x1b9346=_0x302d5c();while(!![]){try{const _0x1a5710=-parseInt(_0x37f65d(0x14d))/0x1*(-parseInt(_0x37f65d(0x11e))/0x2)+-parseInt(_0x37f65d(0x122))/0x3+parseInt(_0x37f65d(0x119))/0x4+-parseInt(_0x37f65d(0x153))/0x5*(-parseInt(_0x37f65d(0x124))/0x6)+parseInt(_0x37f65d(0x115))/0x7+parseInt(_0x37f65d(0x144))/0x8*(parseInt(_0x37f65d(0x15d))/0x9)+-parseInt(_0x37f65d(0x146))/0xa*(parseInt(_0x37f65d(0x15c))/0xb);if(_0x1a5710===_0xc6f0ad)break;else _0x1b9346['push'](_0x1b9346['shift']());}catch(_0xaaf815){_0x1b9346['push'](_0x1b9346['shift']());}}}(_0x581a,0xa1b92),document[_0x10fd2e(0x15b)](_0x10fd2e(0x140),()=>{const _0x2b043d=_0x10fd2e,_0x1500f1=document[_0x2b043d(0x136)]('.canal'),_0x120d11=document[_0x2b043d(0x136)](_0x2b043d(0x164)),_0x48e7bc=document[_0x2b043d(0x15e)]('tituloFormulario'),_0x41dfbe=document['getElementById']('normas-panel'),_0x14fab5=document[_0x2b043d(0x15e)](_0x2b043d(0x151)),_0x25e8e2=document['querySelectorAll']('.norma-section'),_0x216d1d=document[_0x2b043d(0x136)](_0x2b043d(0x14f)),_0x25a0ef=document[_0x2b043d(0x15e)](_0x2b043d(0x131)),_0x516ce3=document[_0x2b043d(0x15e)](_0x2b043d(0x12b)),_0x257e5c=document[_0x2b043d(0x15e)](_0x2b043d(0x158)),_0x87280c={'form-sancion':_0x2b043d(0x129),'form-bans':'discord://discord.com/channels/900838182977949776/900839348591788052','form-warns':_0x2b043d(0x148),'form-tp':_0x2b043d(0x10d),'form-discord':_0x2b043d(0x123)};_0x216d1d[_0x2b043d(0x110)](_0x54aea9=>{const _0x444258=_0x2b043d;_0x54aea9[_0x444258(0x15b)](_0x444258(0x147),()=>{const _0x35a02e=_0x444258;_0x216d1d[_0x35a02e(0x110)](_0x49fbdd=>_0x49fbdd[_0x35a02e(0x157)][_0x35a02e(0x160)](_0x35a02e(0x143))),_0x54aea9[_0x35a02e(0x157)]['add']('active');const _0x4fb55c=_0x54aea9[_0x35a02e(0x132)]('data-menu');_0x25a0ef[_0x35a02e(0x12c)][_0x35a02e(0x10f)]='none',_0x516ce3[_0x35a02e(0x12c)][_0x35a02e(0x10f)]='none',_0x257e5c[_0x35a02e(0x12c)][_0x35a02e(0x10f)]=_0x35a02e(0x116),_0x41dfbe[_0x35a02e(0x12c)][_0x35a02e(0x10f)]='none';if(_0x4fb55c==='forms'){_0x25a0ef[_0x35a02e(0x12c)][_0x35a02e(0x10f)]=_0x35a02e(0x13b),_0x41dfbe[_0x35a02e(0x12c)]['display']='block';const _0x1a174c=document[_0x35a02e(0x11b)]('.canal.active');_0x12ed10(_0x1a174c);}else{if(_0x4fb55c==='help-tickets')_0x516ce3[_0x35a02e(0x12c)][_0x35a02e(0x10f)]=_0x35a02e(0x13b);else _0x4fb55c===_0x35a02e(0x111)&&(_0x257e5c[_0x35a02e(0x12c)]['display']=_0x35a02e(0x13b));}});}),_0x1500f1[_0x2b043d(0x110)](_0x2c86be=>{const _0x2ba892=_0x2b043d;_0x2c86be[_0x2ba892(0x15b)](_0x2ba892(0x147),()=>{_0x12ed10(_0x2c86be);});});const _0x12ed10=_0x3d6c78=>{const _0x53eda0=_0x2b043d;_0x1500f1['forEach'](_0xe601f7=>_0xe601f7[_0x53eda0(0x157)][_0x53eda0(0x160)](_0x53eda0(0x143))),_0x3d6c78[_0x53eda0(0x157)]['add'](_0x53eda0(0x143));const _0x7699cf=_0x3d6c78['getAttribute'](_0x53eda0(0x12a)),_0xc51589=document[_0x53eda0(0x15e)](_0x7699cf);_0x120d11[_0x53eda0(0x110)](_0x2d53a4=>_0x2d53a4[_0x53eda0(0x157)][_0x53eda0(0x160)](_0x53eda0(0x143)));_0xc51589&&(_0xc51589[_0x53eda0(0x157)][_0x53eda0(0x128)](_0x53eda0(0x143)),_0x48e7bc[_0x53eda0(0x113)]='Formulario\x20'+_0x3d6c78[_0x53eda0(0x113)]);const _0x49c7d7=_0x3d6c78[_0x53eda0(0x132)]('data-norma-set');_0x25e8e2[_0x53eda0(0x110)](_0x14c1f8=>_0x14c1f8[_0x53eda0(0x157)]['remove'](_0x53eda0(0x143))),_0x49c7d7===_0x53eda0(0x141)?(document[_0x53eda0(0x15e)]('discord-rules')[_0x53eda0(0x157)][_0x53eda0(0x128)](_0x53eda0(0x143)),_0x14fab5[_0x53eda0(0x113)]='Normas\x20Discord'):(document[_0x53eda0(0x15e)](_0x53eda0(0x120))[_0x53eda0(0x157)][_0x53eda0(0x128)](_0x53eda0(0x143)),_0x14fab5[_0x53eda0(0x113)]=_0x53eda0(0x12d));},_0x183e38=document['getElementById'](_0x2b043d(0x149));_0x183e38[_0x2b043d(0x15b)](_0x2b043d(0x145),_0x4692bc=>{const _0x54d79d=_0x2b043d,_0x504065=_0x4692bc['target'][_0x54d79d(0x154)]['toLowerCase'](),_0x1a7fa2=document['querySelector'](_0x54d79d(0x169));if(_0x1a7fa2){const _0x21b31b=_0x1a7fa2['querySelectorAll']('h4');_0x21b31b['forEach'](_0x45ee2b=>{const _0x316363=_0x54d79d,_0x2fdce4=_0x45ee2b['textContent'][_0x316363(0x156)](),_0x5d9edb=_0x45ee2b[_0x316363(0x15f)][_0x316363(0x136)]('li');let _0xf632ac=![];_0x5d9edb[_0x316363(0x110)](_0x2ef0c4=>{const _0x3791ec=_0x316363;_0x2ef0c4[_0x3791ec(0x12c)][_0x3791ec(0x10f)]=_0x3791ec(0x116);}),_0x2fdce4[_0x316363(0x130)](_0x504065)?(_0x5d9edb[_0x316363(0x110)](_0x2fe51b=>{const _0x52de5d=_0x316363;_0x2fe51b['style'][_0x52de5d(0x10f)]='';}),_0xf632ac=!![]):_0x5d9edb['forEach'](_0x43cfa0=>{const _0xd8ead3=_0x316363,_0x49c75d=_0x43cfa0['querySelector']('.sanction-text')[_0xd8ead3(0x113)]['toLowerCase']();_0x49c75d['includes'](_0x504065)?(_0x43cfa0['style'][_0xd8ead3(0x10f)]='',_0xf632ac=!![]):_0x43cfa0[_0xd8ead3(0x12c)][_0xd8ead3(0x10f)]=_0xd8ead3(0x116);}),_0x45ee2b[_0x316363(0x12c)][_0x316363(0x10f)]=_0xf632ac?'':_0x316363(0x116),_0x45ee2b[_0x316363(0x15f)]['style']['display']=_0xf632ac?'':_0x316363(0x116);});}});const _0x15307b=document[_0x2b043d(0x136)](_0x2b043d(0x137));_0x15307b[_0x2b043d(0x110)](_0x111925=>{const _0x15c006=_0x2b043d;_0x111925[_0x15c006(0x15b)](_0x15c006(0x147),_0x5ef35d=>{const _0x10c6f6=_0x15c006;_0x5ef35d[_0x10c6f6(0x163)]();const _0xdfce62=_0x111925[_0x10c6f6(0x132)](_0x10c6f6(0x11f)),_0x5340ec=_0x111925['getAttribute']('data-tiempo'),_0x3885cd=_0x111925['getAttribute'](_0x10c6f6(0x138)),_0x2103a0=_0x111925[_0x10c6f6(0x132)](_0x10c6f6(0x112)),_0x2a8596=document['querySelector'](_0x10c6f6(0x14a));if(!_0x2a8596)return;const _0x11a110=_0x2a8596['querySelector'](_0x10c6f6(0x117)),_0x464dbd=_0x2a8596[_0x10c6f6(0x11b)]('input[id^=\x22tiempo-\x22]'),_0x452fc6=_0x2a8596[_0x10c6f6(0x11b)]('input[id^=\x22tipo-\x22]');if(_0x11a110)_0x11a110['value']=_0xdfce62;if(_0x464dbd)_0x464dbd[_0x10c6f6(0x154)]=_0x5340ec;if(_0x452fc6)_0x452fc6['value']=_0x3885cd;});});const _0x2716c5=document[_0x2b043d(0x136)](_0x2b043d(0x14b));_0x2716c5[_0x2b043d(0x110)](_0x3a7109=>{const _0x5bd7ed=_0x2b043d;_0x3a7109[_0x5bd7ed(0x15b)](_0x5bd7ed(0x147),_0x2470b7=>{const _0x587cc3=_0x5bd7ed;_0x2470b7[_0x587cc3(0x163)]();const _0x1027d6=document['querySelector'](_0x587cc3(0x14a));if(_0x1027d6){_0x1027d6[_0x587cc3(0x136)](_0x587cc3(0x168))[_0x587cc3(0x110)](_0x40504f=>_0x40504f['value']='');const _0x3fb25c=_0x1027d6['querySelector'](_0x587cc3(0x162));if(_0x3fb25c)_0x3fb25c[_0x587cc3(0x113)]='';}});}),_0x120d11[_0x2b043d(0x110)](_0x595bfa=>{const _0x323b75=_0x2b043d;_0x595bfa[_0x323b75(0x15b)](_0x323b75(0x150),_0x469c02=>{const _0x28dcba=_0x323b75;_0x469c02[_0x28dcba(0x163)]();const _0x9ab7f2=_0x595bfa['id'];let _0x3f16ba,_0xc8f1d8,_0x55cbf3,_0x5db51d,_0x359268,_0x5129f3,_0x43a5dc,_0x2015ad;_0x9ab7f2===_0x28dcba(0x13d)?(_0x55cbf3=_0x595bfa['querySelector']('input[id^=\x22id-\x22]')[_0x28dcba(0x154)],_0x5db51d=_0x595bfa[_0x28dcba(0x11b)](_0x28dcba(0x117))[_0x28dcba(0x154)],_0x359268=_0x595bfa[_0x28dcba(0x11b)](_0x28dcba(0x11d))['value'],_0x5129f3=_0x595bfa[_0x28dcba(0x11b)](_0x28dcba(0x13f))[_0x28dcba(0x154)],_0x43a5dc=_0x595bfa[_0x28dcba(0x11b)](_0x28dcba(0x13a))['value']):(_0x3f16ba=_0x595bfa['querySelector'](_0x28dcba(0x142))[_0x28dcba(0x154)],_0xc8f1d8=_0x595bfa[_0x28dcba(0x11b)](_0x28dcba(0x12e))[_0x28dcba(0x154)],_0x5db51d=_0x595bfa[_0x28dcba(0x11b)]('input[id^=\x22razon-\x22]')[_0x28dcba(0x154)],_0x359268=_0x595bfa['querySelector'](_0x28dcba(0x11d))[_0x28dcba(0x154)],_0x5129f3=_0x595bfa[_0x28dcba(0x11b)](_0x28dcba(0x13f))['value'],_0x43a5dc=_0x595bfa[_0x28dcba(0x11b)](_0x28dcba(0x13a))[_0x28dcba(0x154)]);const _0x37a274=_0x595bfa[_0x28dcba(0x11b)](_0x28dcba(0x137));_0x2015ad=_0x37a274?_0x37a274[_0x28dcba(0x132)](_0x28dcba(0x112)):'';let _0x76deec;_0x9ab7f2===_0x28dcba(0x13d)?(_0x76deec=_0x28dcba(0x133)+_0x55cbf3+'`\x0a',_0x76deec+=_0x28dcba(0x152)+_0x5db51d+'`\x20'+(_0x2015ad?'#'+_0x2015ad:'')+'\x0a',_0x76deec+=_0x28dcba(0x166)+(_0x5129f3?'`'+_0x5129f3+'`':'')+'\x0a',_0x76deec+=_0x28dcba(0x126)+(_0x359268?'`'+_0x359268+'`':'')+'\x0a',_0x76deec+='Pruebas:\x20'+_0x43a5dc):(_0x76deec=_0x28dcba(0x134)+_0x3f16ba+'`\x0a',_0x76deec+=_0x28dcba(0x10c)+_0xc8f1d8+'`\x0a',_0x76deec+='Razón:\x20`'+_0x5db51d+'`\x20'+(_0x2015ad?'#'+_0x2015ad:'')+'\x0a',_0x76deec+='Tipo:\x20'+(_0x5129f3?'`'+_0x5129f3+'`':'')+'\x0a',_0x76deec+=_0x28dcba(0x126)+(_0x359268?'`'+_0x359268+'`':'')+'\x0a',_0x76deec+='Pruebas:\x20'+_0x43a5dc),_0x87280c[_0x9ab7f2]&&(copyTextToClipboard(_0x76deec),window[_0x28dcba(0x159)][_0x28dcba(0x135)]=_0x87280c[_0x9ab7f2]);});});const _0x8166cd=document[_0x2b043d(0x15e)](_0x2b043d(0x10e)),_0x9db538=document[_0x2b043d(0x15e)](_0x2b043d(0x11a)),_0x39082a=document[_0x2b043d(0x15e)](_0x2b043d(0x114)),_0x2c9a4c=document['getElementById'](_0x2b043d(0x139));_0x8166cd['addEventListener']('click',()=>{const _0x74d6f7=_0x2b043d;_0x39082a[_0x74d6f7(0x157)][_0x74d6f7(0x13c)](_0x74d6f7(0x14c)),_0x2c9a4c[_0x74d6f7(0x157)]['contains'](_0x74d6f7(0x14c))&&_0x2c9a4c[_0x74d6f7(0x157)][_0x74d6f7(0x160)](_0x74d6f7(0x14c));}),_0x9db538[_0x2b043d(0x15b)](_0x2b043d(0x147),()=>{const _0x4e68df=_0x2b043d;_0x2c9a4c[_0x4e68df(0x157)]['toggle'](_0x4e68df(0x14c)),_0x39082a[_0x4e68df(0x157)][_0x4e68df(0x127)](_0x4e68df(0x14c))&&_0x39082a['classList'][_0x4e68df(0x160)](_0x4e68df(0x14c));}),_0x12ed10(document['querySelector'](_0x2b043d(0x167)));}));function _0x581a(){const _0x2b806d=['getElementById','nextElementSibling','remove','removeChild','pre','preventDefault','.formulario','appendChild','Tipo:\x20','.canal.active','input,\x20textarea','.norma-section.active','error','Modalidad:\x20`','discord://discord.com/channels/900838182977949776/900839350575710208','toggle-left','display','forEach','future-improvement','data-veces-infringidas','textContent','menu','534954TcvjDT','none','input[id^=\x22razon-\x22]','textarea','3923100mjdklr','toggle-right','querySelector','writeText','input[id^=\x22tiempo-\x22]','18ZBSnMG','data-razon','minecraft-rules','then','147276LCdlEf','discord://discord.com/channels/900838182977949776/1418346823315095582','7938yGsdgz','clipboard','Tiempo:\x20','contains','add','discord://discord.com/channels/900838182977949776/1417787515435487323','data-form','help-tickets-content','style','Normas\x20Minecraft','select[id^=\x22modalidad-\x22]','body','includes','form-container','getAttribute','ID\x20Discord:\x20`','Nick:\x20`','href','querySelectorAll','.add-norma-btn','data-tipo','normas-panel','textarea[id^=\x22pruebas-\x22]','block','toggle','form-discord','select','input[id^=\x22tipo-\x22]','DOMContentLoaded','discord','input[id^=\x22nick-\x22]','active','14072CydagY','input','9246410aXKGga','click','discord://discord.com/channels/900838182977949776/900839349720055838','search-normas','.formulario.active','.clear-form-btn','open','119389UnaFBd','execCommand','.top-menu-btn','submit','normas-title','Razón:\x20`','2005fcXopx','value','Error\x20al\x20copiar\x20el\x20texto:\x20','toLowerCase','classList','future-improvement-content','location','¡Mensaje\x20copiado\x20al\x20portapapeles!','addEventListener','33AhHMkd','4212rjiqvc'];_0x581a=function(){return _0x2b806d;};return _0x581a();}function copyTextToClipboard(_0x3cce2d){const _0x1fe3a8=_0x10fd2e;if(navigator[_0x1fe3a8(0x125)])navigator['clipboard'][_0x1fe3a8(0x11c)](_0x3cce2d)[_0x1fe3a8(0x121)](()=>{const _0x4c3d9a=_0x1fe3a8;alert(_0x4c3d9a(0x15a));})['catch'](_0x135c74=>{const _0x4f3a98=_0x1fe3a8;console[_0x4f3a98(0x10b)](_0x4f3a98(0x155),_0x135c74);});else{const _0xff410c=document['createElement'](_0x1fe3a8(0x118));_0xff410c[_0x1fe3a8(0x154)]=_0x3cce2d,document['body'][_0x1fe3a8(0x165)](_0xff410c),_0xff410c[_0x1fe3a8(0x13e)](),document[_0x1fe3a8(0x14e)]('copy'),document[_0x1fe3a8(0x12f)][_0x1fe3a8(0x161)](_0xff410c),alert(_0x1fe3a8(0x15a));}}
+    </script>
+</body>
+
+</html>
