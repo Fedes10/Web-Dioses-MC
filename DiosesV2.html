@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moderación Dioses MC</title>
+    <meta name="description" content="🔱 Web de moderación para el staff de Dioses MC">
+    <meta property="og:title" content="Moderación Dioses MC">
+    <meta property="og:description"
+        content="Web de moderación para el staff de Dioses MC, con normas Discord y Minecraft, formularios de sanciones y controles internos.">
+    <meta property="og:image"
+        content="https://raw.githubusercontent.com/Fedes10/Web-Dioses-MC/refs/heads/main/Im%C3%A1genes/redondeadoLogoStaff.png">
+    <meta property="og:type" content="website">
+    <link rel="icon" type="image/png"
+    href="https://images.emojiterra.com/google/noto-emoji/unicode-15/color/512px/1f531.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", sans-serif
+        }
+
+        body {
+            background: #2C2F33;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            animation: fadeInBody .6s ease-in
+        }
+
+        @keyframes fadeInBody {
+            from {
+                opacity: 0
+            }
+
+            to {
+                opacity: 1
+            }
+        }
+
+        /* ======================= CABECERA ======================= */
+        header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: linear-gradient(90deg, #1d2d69, #a4a438);
+            box-shadow: 0 4px 10px rgba(72, 71, 71, .4)
+        }
+
+        header .logo-placeholder {
+            width: 6em;
+            height: 6em;
+            background: url('https://raw.githubusercontent.com/Fedes10/Web-Dioses-MC/refs/heads/main/Im%C3%A1genes/redondeadoLogoStaff.png') center/contain no-repeat #b69871;
+            border-radius: 50%;
+            margin-bottom: 10px;
+            border: 3px solid #9e924d;
+            box-shadow: 0 0 15px rgba(255, 215, 0, .5);
+
+            will-change: transform;
+            backface-visibility: hidden;
+            transform-style: preserve-3d;
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+
+            animation: pulse 3s ease-in-out infinite
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1)
+            }
+
+            50% {
+                transform: scale(1.05)
+            }
+        }
+
+        header h1 {
+            font-size: 2.3rem;
+            color: #FFD700;
+            text-shadow: 0 0 10px #FFA500
+        }
+
+        /* ======================= MENÚ SUPERIOR ======================= */
+        #top-menu {
+            display: flex;
+            justify-content: center;
+            background: #23272A;
+            padding: 12px;
+            gap: 15px;
+            flex-wrap: wrap;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, .3)
+        }
+
+        .top-menu-btn {
+            padding: 10px 18px;
+            background: #3b4a8c;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: .3s;
+            color: #fff;
+            border: 2px solid transparent
+        }
+
+        .top-menu-btn:hover {
+            background: #5468d1
+        }
+
+        .top-menu-btn.active {
+            background: #7289DA;
+            border-color: #FFD700;
+            box-shadow: 0 0 10px #FFD700;
+            transform: scale(1.05)
+        }
+
+        /* ======================= MAIN Y SECCIONES ======================= */
+        main {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            max-width: 1900px;
+            margin: 0 auto;
+            width: 100%;
+            gap: 20px;
+            padding: 20px;
+            flex: 1;
+            animation: fadeInMain .7s ease-in
+        }
+
+        @keyframes fadeInMain {
+            from {
+                opacity: 0;
+                transform: translateY(10px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        /* ======================= MENÚ LATERAL Y NORMAS ======================= */
+        #menu,
+        #normas-panel {
+            background: #2C2F33;
+            padding: 15px;
+            border-radius: 10px;
+            height: fit-content;
+            box-shadow: 0 0 10px rgba(0, 0, 0, .5);
+        }
+
+        #menu h2,
+        #normas-panel h2 {
+            color: #7289DA;
+            margin-bottom: 10px;
+            text-align: center;
+            border-bottom: 1px solid #7289DA;
+            padding-bottom: 5px;
+        }
+
+        /* ==================== MENÚ IZQUIERDA ==================== */
+        .canal {
+            padding: 10px;
+            margin: 8px 0;
+            background: #23272A;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: .3s;
+            color: #777777;
+        }
+
+        .canal:hover,
+        .canal.active {
+            background: #505e92;
+            color: #d8d6d6;
+            transform: translateX(5px)
+        }
+
+        /* ==================== MENÚ DERECHA ==================== */
+        .norma-section {
+            display: none;
+            margin-top: 10px;
+        }
+
+        .norma-section.active {
+            display: block
+        }
+
+        .norma-section h4 {
+            color: #62817d;
+            margin-top: 15px;
+            /* Más espacio entre títulos */
+            margin-bottom: 5px
+        }
+
+        .norma-section ul {
+            list-style: none;
+            padding-left: 0;
+            /* Quita el padding de la lista */
+            color: #88815a;
+        }
+
+        /* Estilo para cada item de sanción */
+        .norma-section li {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+            background: #1e1f22;
+            padding: 8px;
+            border-radius: 5px;
+        }
+
+        .sanction-text {
+            flex-grow: 1;
+            /* Permite que el texto ocupe el espacio restante */
+            margin-right: 10px;
+        }
+
+        /* Estilo para el botón de sanción */
+        .add-norma-btn {
+            background-color: #f7d51d;
+            border: none;
+            color: #2C2F33;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s ease-in-out;
+            width: 25px;
+            /* Aumentado para mejor click */
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2em;
+            /* Hace el "+" más grande */
+            padding: 0;
+            line-height: 1;
+            /* Centra mejor el texto */
+        }
+
+        .add-norma-btn:hover {
+            transform: scale(1.1);
+        }
+
+        /* ======================= CONTENIDO ======================= */
+        #contenido {
+            background: #23272A;
+            border-radius: 10px;
+            padding: 20px;
+            min-width: 250px;
+            max-width: 100%;
+            box-shadow: 0 0 10px rgba(114, 137, 218, .5);
+            animation: fadeInContent .7s ease-in
+        }
+
+        #contenido h3 {
+            color: #478dbb;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        label {
+            display: block;
+            color: rgb(190, 190, 190);
+            margin: 10px 0 5px;
+            font-weight: bold;
+        }
+
+        /* ======================= FORMULARIO ======================= */
+        .formulario {
+            display: none;
+            margin-bottom: 20px;
+        }
+
+        .formulario.active {
+            display: block;
+        }
+
+        /* Estilo para el botón de limpiar */
+        .clear-form-btn {
+            background-color: #c0392b;
+            color: #fff;
+            margin-top: 15px;
+            padding: 4px 8px;
+            /* Modificado: más pequeño */
+            border-radius: 8px;
+            cursor: pointer;
+            transition: .3s;
+            float: right;
+            border: none;
+            /* Asegurado que no tiene borde */
+        }
+
+        .clear-form-btn:hover {
+            background-color: #e74c3c;
+            transform: scale(1.05);
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border-radius: 6px;
+            border: none;
+            outline: none;
+            background: #2C2F33;
+            font-weight: bold;
+            font-size: 1.09em;
+            color: #d6d44d
+        }
+
+        button[type="submit"] {
+            margin-top: 15px;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: #7289DA;
+            font-weight: bold;
+            cursor: pointer;
+            transition: .3s;
+            display: block;
+            margin-left: auto;
+            margin-right: auto
+        }
+
+        button[type="submit"]:hover {
+            background: #99AAB5;
+            transform: scale(1.05)
+        }
+
+        pre {
+            background: #2C2F33;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            overflow-x: auto
+        }
+
+        #contenido label {
+            font-size: 1em;
+            color: #626f77;
+            font-weight: normal;
+        }
+
+        #contenido input,
+        #contenido select,
+        #contenido textarea {
+            font-size: 1.2rem;
+        }
+
+        #contenido button {
+            font-size: 1.1rem;
+        }
+
+        /* ======================= BUSCADOR ======================= */
+        .search-container {
+            position: relative
+        }
+
+        #search-normas {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border-radius: 6px;
+            border: none;
+            outline: none;
+            background: #1e2124;
+            color: #fff
+        }
+
+        .clear-btn {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #c0392b;
+            border: none;
+            color: #fff;
+            padding: 2px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: .9em
+        }
+
+        /* ======================= SANCIONES ======================= */
+        .sanction {
+            font-family: monospace;
+            color: #d6d44d;
+            margin-right: 5px;
+            font-weight: bold;
+        }
+
+        /* ======================= BOTONES RESPONSIVE ======================= */
+        .toggle-btn {
+            position: fixed;
+            top: 10px;
+            background: #7289DA;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            z-index: 1100;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, .3);
+            display: none
+        }
+
+        #toggle-left {
+            left: 5px
+        }
+
+        #toggle-right {
+            right: 5px
+        }
+
+        @media(max-width:900px) {
+            main {
+                grid-template-columns: 1fr
+            }
+
+            #menu,
+            #normas-panel {
+                position: fixed;
+                top: 0;
+                bottom: 0;
+                width: 220px;
+                background: #2C2F33;
+                opacity: 0;
+                transform: translateX(-100%);
+                z-index: 1000;
+                height: 100%
+            }
+
+            #menu.open {
+                transform: translateX(0);
+                opacity: 1
+            }
+
+            #normas-panel {
+                right: 0;
+                left: auto;
+                transform: translateX(100%)
+            }
+
+            #normas-panel.open {
+                transform: translateX(0);
+                opacity: 1
+            }
+
+            .toggle-btn {
+                display: block
+            }
+
+            .formulario.active {
+                display: block !important;
+            }
+        }
+
+        @keyframes fadeInContent {
+            from {
+                opacity: 0;
+                transform: translateY(10px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="logo-placeholder"></div>
+        <h1>Moderación Dioses MC</h1>
+    </header>
+
+    <div id="top-menu">
+        <div class="top-menu-btn" data-menu="future-improvement">⚙️ Registro</div>
+        <div class="top-menu-btn active" data-menu="forms">📝 Formularios</div>
+        <div class="top-menu-btn" data-menu="help-tickets">🆘 Ayuda tickets</div>
+    </div>
+
+    <div id="toggle-left" class="toggle-btn">☰ Canales</div>
+    <div id="toggle-right" class="toggle-btn">📜 Normas</div>
+    <main>
+
+        <div id="menu">
+            <h2>Canales</h2>
+            <div class="canal active" data-form="form-sancion" data-norma-set="minecraft">📝│pedir-sancion</div>
+            <div class="canal" data-form="form-bans" data-norma-set="minecraft">⛔│bans-kicks</div>
+            <div class="canal" data-form="form-warns" data-norma-set="minecraft">⚠️│warns-mutes</div>
+            <div class="canal" data-form="form-tp" data-norma-set="minecraft">🌐│tp-bug</div>
+            <div class="canal" data-form="form-discord" data-norma-set="discord">🔷│sanciones-dc</div>
+        </div>
+
+        <div id="contenido">
+            <button class="clear-form-btn">Limpiar</button>
+            <h3 id="tituloFormulario">Formulario 📝│pedir-sancion</h3>
+
+            <div id="form-container">
+                <form id="form-sancion" class="formulario active">
+                    <label>Nick:</label><input type="text" id="nick-sancion" required>
+                    <label>Modalidad:</label><select id="modalidad-sancion">
+                        <option value="Survival">Survival</option>
+                        <option value="Escapa de la Bestia">Escapa de la Bestia</option>
+                    </select>
+                    <label>Razón:</label><input type="text" id="razon-sancion" readonly>
+                    <label>Tiempo:</label><input type="text" id="tiempo-sancion" readonly>
+                    <label>Tipo:</label><input type="text" id="tipo-sancion" readonly>
+                    <label>Pruebas:</label><textarea id="pruebas-sancion"></textarea>
+                    <button type="submit">Generar mensaje</button>
+                    <pre id="resultado-sancion"></pre>
+                </form>
+
+                <form id="form-bans" class="formulario">
+                    <label>Nick:</label><input type="text" id="nick-bans" required>
+                    <label>Modalidad:</label><select id="modalidad-bans">
+                        <option value="Survival">Survival</option>
+                        <option value="Escapa de la Bestia">Escapa de la Bestia</option>
+                    </select>
+                    <label>Razón:</label><input type="text" id="razon-bans" readonly>
+                    <label>Tiempo:</label><input type="text" id="tiempo-bans" readonly>
+                    <label>Tipo:</label><input type="text" id="tipo-bans" readonly>
+                    <label>Pruebas:</label><textarea id="pruebas-bans"></textarea>
+                    <button type="submit">Generar mensaje</button>
+                    <pre id="resultado-bans"></pre>
+                </form>
+
+                <form id="form-warns" class="formulario">
+                    <label>Nick:</label><input type="text" id="nick-warns" required>
+                    <label>Modalidad:</label><select id="modalidad-warns">
+                        <option value="Survival">Survival</option>
+                        <option value="Escapa de la Bestia">Escapa de la Bestia</option>
+                    </select>
+                    <label>Razón:</label><input type="text" id="razon-warns" readonly>
+                    <label>Tiempo:</label><input type="text" id="tiempo-warns" readonly>
+                    <label>Tipo:</label><input type="text" id="tipo-warns" readonly>
+                    <label>Pruebas:</label><textarea id="pruebas-warns"></textarea>
+                    <button type="submit">Generar mensaje</button>
+                    <pre id="resultado-warns"></pre>
+                </form>
+
+                <form id="form-tp" class="formulario">
+                    <label>Nick:</label><input type="text" id="nick-tp" required>
+                    <label>Modalidad:</label><select id="modalidad-tp">
+                        <option value="Survival">Survival</option>
+                        <option value="Escapa de la Bestia">Escapa de la Bestia</option>
+                    </select>
+                    <label>Pruebas:</label><textarea id="pruebas-tp"></textarea>
+                    <button type="submit">Generar mensaje</button>
+                    <pre id="resultado-tp"></pre>
+                </form>
+
+                <form id="form-discord" class="formulario">
+                    <label>ID Discord:</label><input type="text" id="id-discord" required>
+                    <label>Razón:</label><input type="text" id="razon-discord" readonly>
+                    <label>Tiempo:</label><input type="text" id="tiempo-discord" readonly>
+                    <label>Tipo:</label><input type="text" id="tipo-discord" readonly>
+                    <label>Pruebas:</label><textarea id="pruebas-discord"></textarea>
+                    <button type="submit">Generar mensaje</button>
+                    <pre id="resultado-discord"></pre>
+                </form>
+            </div>
+
+            <div id="help-tickets-content" class="formulario">
+                <div style="text-align: center; padding: 20px;">
+                    <p style="font-size: 1.2em; color: #7289DA; margin-bottom: 20px;">
+                        🚧 ¡Estamos trabajando en esta sección! 🚧
+                    </p>
+                    <p style="font-size: 1em; color: #99AAB5;">
+                        Pronto podrás encontrar aquí una pequeña IA de ayuda para la resolución de tickets.
+                    </p>
+                    <div style="margin-top: 30px;">
+                        <img src="https://static.wixstatic.com/media/f567b1_48c1b8bcf6d94043a35f79fb42b772b3~mv2.gif"
+                            alt="Trabajando en ello" style="max-width: 60%; height: auto; border-radius: 8px;">
+                    </div>
+                </div>
+            </div>
+
+            <div id="future-improvement-content" class="formulario">
+                <div style="text-align: center; padding: 20px;">
+                    <p style="font-size: 1.2em; color: #7289DA; margin-bottom: 20px;">
+                        💡 ¡Una futura mejora está en camino! 💡
+                    </p>
+                    <p style="font-size: 1em; color: #99AAB5;">
+                        Este espacio está reservado para almacenar un registro de sanciones de los jugadores tanto en
+                        Discord como en el Servidor de Minecraft 👁️
+                    </p>
+                    <div style="ma
